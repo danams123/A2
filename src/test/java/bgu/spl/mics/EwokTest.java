@@ -1,4 +1,6 @@
-package main.java.bgu.spl.mics.application.passiveObjects;
+package bgu.spl.mics;
+
+import bgu.spl.mics.application.passiveObjects.Ewok;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +24,7 @@ class EwokTest {
         assertTrue(E.getAvailable());
         E.acquire();
         try {
-            asserFalse(E.getAvailable());
+            assertFalse(E.getAvailable());
         }
         catch(AssertionError e){
             System.out.println(e);
@@ -34,11 +36,10 @@ class EwokTest {
         assertFalse(E.getAvailable());
         E.release();
         try {
-            asserTrue(E.getAvailable());
+            assertTrue(E.getAvailable());
         }
         catch(AssertionError e){
             System.out.println(e);
         }
-    }
     }
 }
