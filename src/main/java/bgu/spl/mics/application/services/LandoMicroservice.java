@@ -13,12 +13,12 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  */
 public class LandoMicroservice  extends MicroService {
 
-    public LandoMicroservice() {
+    public LandoMicroservice(long duration) {
         super("Lando");
     }
 
     @Override
     protected void initialize() {
-       
+
     }
 }

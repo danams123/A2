@@ -1,5 +1,3 @@
-package bgu.spl.mics.application.services;
-
 import java.util.List;
 
 import bgu.spl.mics.MicroService;

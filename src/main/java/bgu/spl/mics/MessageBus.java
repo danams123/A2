@@ -9,8 +9,6 @@ package bgu.spl.mics;
  * You must not alter any of the given methods of this interface. 
  * You cannot add methods to this interface.
  */
-
-//Done
 public interface MessageBus {
 
     /**
@@ -95,5 +93,5 @@ public interface MessageBus {
      *                              to became available.
      */
     Message awaitMessage(MicroService m) throws InterruptedException;
-    
+
 }
