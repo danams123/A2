@@ -44,9 +44,9 @@ public class Future<T> {
 	/**
 	 * @return true if this object has been resolved, false otherwise
 	 */
-	public boolean isDone() {
-		return null;
-	}
+//	public boolean isDone() {
+//		return null;
+//	}
 
 	/**
 	 * retrieves the result the Future object holds if it has been resolved,
