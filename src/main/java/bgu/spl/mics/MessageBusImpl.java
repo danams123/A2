@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
+
+//Singleton
 public class MessageBusImpl implements MessageBus {
 
 

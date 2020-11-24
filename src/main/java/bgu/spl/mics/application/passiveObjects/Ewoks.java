@@ -13,6 +13,7 @@ import java.util.List;
  * <p>
  * You can add ONLY private methods and fields to this class.
  */
+//singleton and finalize
 public class Ewoks {
     private ArrayList<Ewok> EwoksList;
     private int size;
