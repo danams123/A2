@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class MicroService implements Runnable {
 
 
+
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
@@ -148,6 +149,7 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
+        //call register in message bus
 
     }
 

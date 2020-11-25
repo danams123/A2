@@ -1,4 +1,6 @@
 package bgu.spl.mics;
+import java.util.HashMap;
+import java.util.Queue;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -8,6 +10,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl implements MessageBus {
+
+	//			   ms.name,ms.queue
+	private HashMap<String, Queue> queueMap = new HashMap<>();
 
 
 	@Override
@@ -39,7 +44,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-
+		// insert each new ms into the map, and create a new queue for it
 	}
 
 	@Override
