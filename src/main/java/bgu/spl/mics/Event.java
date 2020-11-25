@@ -9,5 +9,5 @@ package bgu.spl.mics;
  */
 public interface Event<T> extends Message {
 
-    public void doSome();
+    public String getSenderName();
 }
