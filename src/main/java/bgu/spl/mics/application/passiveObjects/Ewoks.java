@@ -1,7 +1,8 @@
 package bgu.spl.mics.application.passiveObjects;
 
-import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
+
 
 
 /**
@@ -12,24 +13,24 @@ import java.util.ArrayList;
  * <p>
  * You can add ONLY private methods and fields to this class.
  */
-public class Ewoks {
-    private ArrayList <Ewok> EwoksList;
-    private int size;
+//singleton and finalize
+final public class Ewoks {
+    final private ArrayList<Ewok> EwoksList;
+    private static Ewoks instance = null; //no final ok?
 
-    public Ewoks (int EwokNum)
-    {
-        EwoksList= new ArrayList<>(EwokNum);
-        for (int i = 1; i <= EwokNum ; i++) {
+    private Ewoks(int EwokNum) {
+        EwoksList = new ArrayList<>(EwokNum);
+        for (int i = 1; i <= EwokNum; i++) {
             EwoksList.add(new Ewok(i));
         }
-        size=EwokNum;
-
     }
 
-     public int size (){return size;}
+    public static Ewoks getInstance(int EwokNum) {
+        if (instance == null){
+            instance = new Ewoks(EwokNum);
+        }
+        return instance;
+    }
 
-     public ArrayList <Ewok> getEwoksList (){
-                return this.EwoksList;
-     }
-
+    public ArrayList<Ewok> getEwoksList(){return EwoksList;}
 }

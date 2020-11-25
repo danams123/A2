@@ -1,6 +1,4 @@
 package bgu.spl.mics;
-import java.util.HashMap;
-import java.util.Queue;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -9,12 +7,24 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Write your implementation here!
  * Only private fields and methods can be added to this class.
  */
+
+//Singleton
 public class MessageBusImpl implements MessageBus {
 
-	//			   ms.name,ms.queue
-	private HashMap<String, Queue> queueMap = new HashMap<>();
+	private static MessageBusImpl instance = null;
 
+	private MessageBusImpl(){
+	//what do we need here?
+	}
 
+	public static MessageBusImpl getInstance() {
+		if (instance == null){
+			instance = new MessageBusImpl();
+		}
+		return instance;
+	}
+
+//why here its event<T> and on ms it isnt
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 
@@ -44,7 +54,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-		// insert each new ms into the map, and create a new queue for it
+
 	}
 
 	@Override
