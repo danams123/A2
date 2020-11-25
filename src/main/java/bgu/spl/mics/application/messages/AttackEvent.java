@@ -1,7 +1,7 @@
 package bgu.spl.mics.application.messages;
 import bgu.spl.mics.Event;
 import bgu.spl.mics.application.passiveObjects.Attack;
-
+//ShaniShlitaaaa
 public class AttackEvent implements Event<Boolean> {
     public String getSenderName(){return null;}
 }
