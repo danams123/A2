@@ -77,20 +77,52 @@ class MessageBusImplTest {
 
     @Test
     void sendBroadcast() {
-        //whats the difference between this and subsB?
+        mb.register(m1);
+        m1.subscribeBroadcast(b.getClass() , c);
+        mb.sendBroadcast(b);
+        try{
+            assertEquals(mb.awaitMessage(m1),b);}
+        catch(InterruptedException j){
+            System.out.println("interrupted");
+        }
+        mb.unregister(m1);
     }
 
     @Test
-    void sendEvent() {  //whats the difference between this and subsE?
+    void sendEvent() {
+        mb.register(m1);
+        m1.subscribeEvent(e.getClass() , c);
+        mb.sendEvent(e);
+        try{
+            assertEquals(mb.awaitMessage(m1),e);}
+        catch(InterruptedException j){
+            System.out.println("interrupted");
+        }
+        mb.unregister(m1);
+
     }
 
     @Test
     void register() {
+        mb.register(m1);
+        m1.subscribeEvent(e.getClass() , c);
+        mb.sendEvent(e);
+        try{
+            assertEquals(mb.awaitMessage(m1),e);}
+        catch(InterruptedException j){
+            System.out.println("interrupted");
+        }
+        mb.unregister(m1);
     }
 
-    @Test
-    void unregister() {
 
+    @Test
+    void unregister() {// SOS awaitMessage
+        Integer i = 0;
+        mb.unregister(m1);
+        //  m1.subscribeEvent(e.getClass() , (i)-> i++);
+        mb.sendEvent(e);
+        assertTrue (i!=1);
     }
 
     @Test
