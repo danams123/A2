@@ -11,7 +11,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 //Singleton
 public class MessageBusImpl implements MessageBus {
 
+	private static MessageBusImpl instance = null;
 
+	private MessageBusImpl(){
+	//what do we need here?
+	}
+
+	public static MessageBusImpl getInstance() {
+		if (instance == null){
+			instance = new MessageBusImpl();
+		}
+		return instance;
+	}
+
+//why here its event<T> and on ms it isnt
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 
