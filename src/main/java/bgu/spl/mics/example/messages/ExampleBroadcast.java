@@ -10,7 +10,7 @@ public class ExampleBroadcast implements Broadcast {
         this.senderId = senderId;
     }
 
-    public String getSenderId() {
+    public String getSenderName() {
         return senderId;
     }
 
