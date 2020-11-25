@@ -3,5 +3,5 @@ import bgu.spl.mics.Event;
 import bgu.spl.mics.application.passiveObjects.Attack;
 
 public class AttackEvent implements Event<Boolean> {
-	
+    public String getSenderName(){return null;}
 }

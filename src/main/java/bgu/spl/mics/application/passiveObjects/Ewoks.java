@@ -1,9 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 
 import java.util.ArrayList;
-import java.util.List;
-
-
 
 /**
  * Passive object representing the resource manager.
@@ -14,7 +11,7 @@ import java.util.List;
  * You can add ONLY private methods and fields to this class.
  */
 //singleton and finalize
-final public class Ewoks {
+public class Ewoks {
     final private ArrayList<Ewok> EwoksList;
     private static Ewoks instance = null; //no final ok?
 
