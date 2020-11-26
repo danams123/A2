@@ -25,35 +25,16 @@ class EwokTest {
 
     @Test
     void acquire() {
-        try {
-            assertTrue(E.getAvailable());
-        }
-        catch(AssertionError e){
-            System.out.println(e);
-        }
+        assertTrue(E.getAvailable());
         E.acquire();
-        try {
-            assertFalse(E.getAvailable());
-        }
-        catch(AssertionError e){
-            System.out.println(e);
-        }
+        assertFalse(E.getAvailable());
     }
 
     @Test
     void release() {
-        try {
-            assertFalse(E.getAvailable());
-        }
-        catch(AssertionError e){
-            System.out.println(e);
-        }
+        assertFalse(E.getAvailable());
         E.release();
-        try {
-            assertTrue(E.getAvailable());
-        }
-        catch(AssertionError e){
-            System.out.println(e);
-        }
+        assertTrue(E.getAvailable());
     }
+
 }

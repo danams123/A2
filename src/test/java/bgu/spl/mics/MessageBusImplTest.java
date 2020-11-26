@@ -11,7 +11,7 @@ class MessageBusImplTest {
     private MessageBusImpl mb;
     private MicroService m1;
     private MicroService m2;
-    private ExampleEvent e;
+    private Event e;
     private Broadcast b;
     private Callback c;
 
@@ -22,11 +22,8 @@ class MessageBusImplTest {
             @Override
             protected void initialize() {}
         };
-        m2 = new MicroService("") {
-            @Override
-            protected void initialize() {}
-        };
-        e = new ExampleEvent("");
+//        e = new ExampleEvent("");
+        e = () -> {return "";};
         b = () -> {return "";};
         c = (Object o) -> {o = 1;};
     }
@@ -34,10 +31,11 @@ class MessageBusImplTest {
     @Test
     void subscribeEvent() {
         mb.register(m1);
-        mb.subscribeEvent(e.getClass(),m1);
-        mb.sendEvent(e);
+        ExampleEvent E = new ExampleEvent("");
+        mb.subscribeEvent(E.getClass(), m1);
+        mb.sendEvent(E);
         try{
-            assertTrue(mb.awaitMessage(m1).equals(e));}//how to handle if it didnt got the message??
+            assertTrue(mb.awaitMessage(m1).equals(E));}//how to handle if it didnt got the message??
         catch(InterruptedException i){
             System.out.println("interrupted");
         }
@@ -58,21 +56,20 @@ class MessageBusImplTest {
     }
 
     @Test
-    void complete() { //awaitMessage for Darth Yair
+    void complete() throws InterruptedException {
         mb.register(m1);
-        mb.register(m2);
         m1.subscribeEvent(e.getClass(),c);
-        Future f = m2.sendEvent(e);
+        Future<Integer> f = mb.sendEvent(e);
         assertFalse(f.isDone());
+        Event E = null;
         try{
-            mb.awaitMessage(m1);}//how to handle if it didnt got the message??
+            E = (Event) mb.awaitMessage(m1);} //how to handle if it didnt got the message??
         catch(InterruptedException i){
             System.out.println("interrupted");
         }
-        mb.complete(e,null);//what should i write in the result?
-        assertTrue(f.isDone());
+        mb.complete(E,5);//what should i write in the result?
+        assertEquals(f.get(),5);
         mb.unregister(m1);
-        mb.unregister(m2);
     }
 
     @Test
@@ -99,7 +96,6 @@ class MessageBusImplTest {
             System.out.println("interrupted");
         }
         mb.unregister(m1);
-
     }
 
     @Test
@@ -115,20 +111,15 @@ class MessageBusImplTest {
         mb.unregister(m1);
     }
 
-
-    @Test
-    void unregister() {// SOS awaitMessage
-        Integer i = 0;
-        mb.unregister(m1);
-        //  m1.subscribeEvent(e.getClass() , (i)-> i++);
-        mb.sendEvent(e);
-        assertTrue (i!=1);
-    }
-
     @Test
     void awaitMessage() { // should i test the blocking part? and how?
         mb.register(m1);
         m1.subscribeEvent(e.getClass(),c);
+//        try{
+//            assertNull(mb.awaitMessage(m1));}
+//        catch(InterruptedException i){
+//            System.out.println("interrupted");
+//        }
         mb.sendEvent(e);
         try{
             assertEquals(mb.awaitMessage(m1),e);}
