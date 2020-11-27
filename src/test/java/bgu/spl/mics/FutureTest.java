@@ -1,9 +1,5 @@
 package bgu.spl.mics;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.AfterAll;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -12,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class FutureTest {
+class FutureTest {
 
     private Future<String> future;
 
@@ -22,8 +18,7 @@ public class FutureTest {
     }
 
     @Test
-    public void testGet()
-    {
+    public void testGet(){
         assertFalse(future.isDone());
         future.resolve("");
         future.get();
@@ -47,8 +42,7 @@ public class FutureTest {
     }
 
     @Test
-    public void testGetWithTimeOut() throws InterruptedException //why interruptedexception
-    {
+    public void testGetWithTimeOut(){
         assertFalse(future.isDone());
         future.get(100,TimeUnit.MILLISECONDS);
         assertFalse(future.isDone());

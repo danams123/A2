@@ -1,7 +1,6 @@
 package bgu.spl.mics;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import bgu.spl.mics.application.passiveObjects.Ewok;
@@ -16,11 +15,6 @@ class EwokTest {
     @BeforeEach
     void setUp() {
         E = new Ewok(0);
-    }
-
-    @AfterEach
-    void tearDown() {
-        E = null;
     }
 
     @Test

@@ -35,7 +35,7 @@ class MessageBusImplTest {
         mb.subscribeEvent(E.getClass(), m1);
         mb.sendEvent(E);
         try{
-            assertTrue(mb.awaitMessage(m1).equals(E));}//how to handle if it didnt got the message??
+            assertTrue(mb.awaitMessage(m1).equals(E));}
         catch(InterruptedException i){
             System.out.println("interrupted");
         }
@@ -48,7 +48,7 @@ class MessageBusImplTest {
         mb.subscribeBroadcast(b.getClass(),m1);
         mb.sendBroadcast(b);
         try{
-            assertTrue(mb.awaitMessage(m1).equals(b));}//how to handle if it didnt got the message??
+            assertTrue(mb.awaitMessage(m1).equals(b));}
         catch(InterruptedException i){
             System.out.println("interrupted");
         }
@@ -56,18 +56,18 @@ class MessageBusImplTest {
     }
 
     @Test
-    void complete() throws InterruptedException {
+    void complete(){
         mb.register(m1);
         m1.subscribeEvent(e.getClass(),c);
         Future<Integer> f = mb.sendEvent(e);
         assertFalse(f.isDone());
         Event E = null;
         try{
-            E = (Event) mb.awaitMessage(m1);} //how to handle if it didnt got the message??
+            E = (Event) mb.awaitMessage(m1);}
         catch(InterruptedException i){
             System.out.println("interrupted");
         }
-        mb.complete(E,5);//what should i write in the result?
+        mb.complete(E,5);
         assertEquals(f.get(),5);
         mb.unregister(m1);
     }
@@ -89,7 +89,8 @@ class MessageBusImplTest {
     void sendEvent() {
         mb.register(m1);
         m1.subscribeEvent(e.getClass() , c);
-        mb.sendEvent(e);
+        Future f = mb.sendEvent(e);
+        assertNull(f);
         try{
             assertEquals(mb.awaitMessage(m1),e);}
         catch(InterruptedException j){
@@ -112,14 +113,9 @@ class MessageBusImplTest {
     }
 
     @Test
-    void awaitMessage() { // should i test the blocking part? and how?
+    void awaitMessage(){
         mb.register(m1);
         m1.subscribeEvent(e.getClass(),c);
-//        try{
-//            assertNull(mb.awaitMessage(m1));}
-//        catch(InterruptedException i){
-//            System.out.println("interrupted");
-//        }
         mb.sendEvent(e);
         try{
             assertEquals(mb.awaitMessage(m1),e);}
