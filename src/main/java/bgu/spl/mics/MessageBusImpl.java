@@ -11,17 +11,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 //Singleton
 public class MessageBusImpl implements MessageBus {
 
-	private static MessageBusImpl instance = null;
+	private static class MessageBusHolder {
+		private static MessageBusImpl instance = new MessageBusImpl();
+	}
 
 	private MessageBusImpl(){
 	//what do we need here?
 	}
 
 	public static MessageBusImpl getInstance() {
-		if (instance == null){
-			instance = new MessageBusImpl();
-		}
-		return instance;
+		return MessageBusHolder.instance;
 	}
 
 //why here its event<T> and on ms it isnt

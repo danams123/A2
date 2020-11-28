@@ -21,6 +21,7 @@ import com.google.gson.GsonBuilder;
  */
 public class Main {
 	public static void main(String[] args) {
-
+//		Gson g = new Gson();
+//		Attack[] a = g.fromJson("attacks", )
 	}
 }

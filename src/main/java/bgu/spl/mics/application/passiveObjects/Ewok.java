@@ -15,6 +15,7 @@ public class Ewok {
         this.serialNumber = serialNumber;
         this.available = true;
     }
+
     /**
      * Acquires an Ewok
      */

@@ -1,18 +1,16 @@
 package bgu.spl.mics;
 
-import bgu.spl.mics.ExampleEvent;
+import bgu.spl.mics.application.messages.AttackEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class MessageBusImplTest {
 
     private MessageBusImpl mb;
     private MicroService m1;
-    private MicroService m2;
-    private Event e;
-    private Broadcast b;
+    private ExampleEvent e;
+    private ExampleBroadcast b;
     private Callback c;
 
     @BeforeEach
@@ -22,16 +20,15 @@ class MessageBusImplTest {
             @Override
             protected void initialize() {}
         };
-//        e = new ExampleEvent("");
-        e = () -> {return "";};
-        b = () -> {return "";};
+        e = new ExampleEvent("");
+        b = new ExampleBroadcast("");
         c = (Object o) -> {o = 1;};
     }
 
     @Test
     void subscribeEvent() {
         mb.register(m1);
-        ExampleEvent E = new ExampleEvent("");
+        AttackEvent E = new AttackEvent();
         mb.subscribeEvent(E.getClass(), m1);
         mb.sendEvent(E);
         try{
@@ -57,17 +54,22 @@ class MessageBusImplTest {
 
     @Test
     void complete(){
+        ExampleEvent e1 = new ExampleEvent("");
         mb.register(m1);
-        m1.subscribeEvent(e.getClass(),c);
-        Future<Integer> f = mb.sendEvent(e);
+        m1.subscribeEvent(e1.getClass(),c);
+        Future<Integer> f = mb.sendEvent(e1);
         assertFalse(f.isDone());
-        Event E = null;
         try{
-            E = (Event) mb.awaitMessage(m1);}
+            mb.awaitMessage(m1);}
         catch(InterruptedException i){
             System.out.println("interrupted");
         }
-        mb.complete(E,5);
+        /*
+        We dont need to create a new event from awaitmessage() output because we assume it works properly,
+        therefore e is the same event as the one awaitmessage() will return, so putting e as an argument in complete()
+         or the event we get from awaitmessage() won't change the outcome of complete(), which we are testing here.
+         */
+        mb.complete(e1,5);
         assertEquals(f.get(),5);
         mb.unregister(m1);
     }

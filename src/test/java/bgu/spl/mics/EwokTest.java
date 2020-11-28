@@ -2,9 +2,7 @@ package bgu.spl.mics;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import bgu.spl.mics.application.passiveObjects.Ewok;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 //Done
@@ -26,6 +24,7 @@ class EwokTest {
 
     @Test
     void release() {
+        E.acquire(); // the field is true in the beginning
         assertFalse(E.getAvailable());
         E.release();
         assertTrue(E.getAvailable());
