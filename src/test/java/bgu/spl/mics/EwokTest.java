@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import bgu.spl.mics.application.passiveObjects.Ewok;
 import static org.junit.jupiter.api.Assertions.*;
 
-//Done
+
 class EwokTest {
 
     private Ewok E;
