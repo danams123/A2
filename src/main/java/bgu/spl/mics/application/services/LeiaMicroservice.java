@@ -1,11 +1,11 @@
 package bgu.spl.mics.application.services;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.DeactivationEvent;
-import bgu.spl.mics.application.messages.TerminateBroadcast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
 
@@ -19,14 +19,30 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
+    private TerminateCallback t;
+    private ConcurrentLinkedDeque<Future> futures;
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
+        t = new TerminateCallback();
+        futures = new ConcurrentLinkedDeque<>();
     }
 
     @Override
     protected void initialize() {
-
+        this.subscribeBroadcast(TerminateBroadcast.class, t);
+        for(Attack elem : attacks){
+            futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials())));
+        }
+        while(!futures.isEmpty()){
+            Future f = futures.poll();
+            f.get(); //is it good?
+        }
+        futures.add(this.sendEvent(new DeactivationEvent()));
+        futures.poll().get();//is it good?
+        futures.add(this.sendEvent(new BombDestroyerEvent()));
+        futures.poll().get();//is it good?
+        this.sendBroadcast(new TerminateBroadcast());
     }
 }

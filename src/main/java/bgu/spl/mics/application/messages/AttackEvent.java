@@ -1,16 +1,18 @@
 package bgu.spl.mics.application.messages;
 import bgu.spl.mics.Event;
 
-public class AttackEvent implements Event<Boolean> {
-    private long duration;
-    private int[] serials;
+import java.util.List;
 
-    public AttackEvent(long _duration, int[] _serials){
+public class AttackEvent implements Event<Boolean> {
+    final private long duration;
+    final List<Integer> serials;
+
+    public AttackEvent(long _duration, List<Integer> _serials){
         duration = _duration;
         serials = _serials;
     }
 
     public long getDuration(){return duration;}
 
-    public int[] getSerials(){return serials;}
+    public List<Integer> getSerials(){return serials;}
 }
