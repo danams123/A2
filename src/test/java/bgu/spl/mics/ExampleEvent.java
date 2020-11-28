@@ -1,6 +1,8 @@
 package bgu.spl.mics;
 
-public class ExampleEvent implements Event {
+import bgu.spl.mics.Event;
+
+public class ExampleEvent implements Event{
 
     private String senderName;
 
