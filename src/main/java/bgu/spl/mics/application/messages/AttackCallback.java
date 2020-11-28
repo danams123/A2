@@ -1,12 +1,11 @@
 package bgu.spl.mics.application.messages;
 
 import bgu.spl.mics.Callback;
-import bgu.spl.mics.MicroService;
 
-public class AttackCallback implements Callback<MicroService> {
+public class AttackCallback implements Callback {
 
     @Override
-    public void call(MicroService m) {
-
+    public void call(Object c) {
+        //the thread should sleep here and the resources wait
     }
 }

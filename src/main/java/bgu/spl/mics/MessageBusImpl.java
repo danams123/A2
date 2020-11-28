@@ -23,7 +23,7 @@ public class MessageBusImpl implements MessageBus {
 		return MessageBusHolder.instance;
 	}
 
-//why here its event<T> and on ms it isnt
+
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 
