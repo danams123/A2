@@ -3,6 +3,9 @@ package bgu.spl.mics;
 import bgu.spl.mics.application.messages.AttackEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class MessageBusImplTest {
@@ -28,7 +31,9 @@ class MessageBusImplTest {
     @Test
     void subscribeEvent() {
         mb.register(m1);
-        AttackEvent E = new AttackEvent();
+        List<Integer> l = null;
+        long d = 0;
+        AttackEvent E = new AttackEvent(d,l);
         mb.subscribeEvent(E.getClass(), m1);
         mb.sendEvent(E);
         try{

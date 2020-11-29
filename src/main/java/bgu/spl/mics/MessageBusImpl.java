@@ -16,6 +16,7 @@ public class MessageBusImpl implements MessageBus {
 	private HashMap<MicroService,Message> services;
 	private HashMap<Class<? extends Message>,MicroService> messages;
 	private HashMap<Event,Future> futures;
+	//maybe change the fields to some other structures? queue? vector? think about it.
 
 	private static class MessageBusHolder {
 		private static MessageBusImpl instance = new MessageBusImpl();
