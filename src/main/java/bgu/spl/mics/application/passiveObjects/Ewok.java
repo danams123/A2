@@ -6,7 +6,7 @@ package bgu.spl.mics.application.passiveObjects;
  * <p>
  * You may add fields and methods to this class as you see fit (including public methods).
  */
-// shared resource - finalize
+// shared resource - we need to make it thread safe
 public class Ewok {
 	int serialNumber;
 	boolean available;

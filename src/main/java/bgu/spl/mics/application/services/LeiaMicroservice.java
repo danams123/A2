@@ -20,7 +20,7 @@ import bgu.spl.mics.application.passiveObjects.Diary;
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
     private TerminateCallback t;
-    private ConcurrentLinkedDeque<Future> futures;
+    private ConcurrentLinkedDeque<Future> futures; // do we need concurrent? dont think so
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
