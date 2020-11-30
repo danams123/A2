@@ -8,8 +8,8 @@ package bgu.spl.mics.application.passiveObjects;
  */
 // shared resource - we need to make it thread safe
 public class Ewok {
-	int serialNumber;
-	boolean available;
+	int serialNumber; //AtomicInteger?
+	boolean available; //AtomicBoolean?
 
     public Ewok(int serialNumber){
         this.serialNumber = serialNumber;

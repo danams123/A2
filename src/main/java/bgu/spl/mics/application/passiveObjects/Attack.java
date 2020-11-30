@@ -22,7 +22,7 @@ public class Attack {
         this.duration = duration;
     }
 
-    public List<Integer> getSerials(){return serials;}
+    public final List<Integer> getSerials(){return serials;}
 
-    public int getDuration(){return duration;}
+    public final int getDuration(){return duration;}
 }
