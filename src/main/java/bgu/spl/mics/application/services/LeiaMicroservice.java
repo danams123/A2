@@ -19,14 +19,14 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
-    private TerminateCallback t;
-    private ConcurrentLinkedDeque<Future> futures; // do we need concurrent? dont think so
+    private TerminateCallback t; //will be added to a Hashmap of Microservice
+    private ConcurrentLinkedDeque<Future> futures; // do we need concurrent?
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
         t = new TerminateCallback();
-        futures = new ConcurrentLinkedDeque<>();
+        futures = new ConcurrentLinkedDeque<>(); //in Microservice
     }
 
     @Override
@@ -35,9 +35,10 @@ public class LeiaMicroservice extends MicroService {
         for(Attack elem : attacks){
             futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials())));
         }
-        while(!futures.isEmpty()){
+        while(!futures.isEmpty()){ //do we need blockingqueue?
             Future f = futures.poll();
-            f.get(); //is it good?
+            f.get(); //is it good? do we need to consider the option in which the first event takes longer to finish than the others?
+            //prioritize by durations in attacks and by serials.
         }
         futures.add(this.sendEvent(new DeactivationEvent()));
         futures.poll().get();//is it good?

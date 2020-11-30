@@ -1,6 +1,7 @@
 package bgu.spl.mics;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -22,14 +23,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class MicroService implements Runnable {
 
-
+    private ConcurrentHashMap<Class<? extends  Message>, Class<? extends Callback>> callbacks;
+    private LinkedBlockingDeque<Future> futures;
+    private String n;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
      */
     public MicroService(String name) {
-
+        n = name;
+        callbacks = new ConcurrentHashMap<>();
+        futures = new LinkedBlockingDeque<>();
     }
 
     /**
@@ -54,9 +59,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-
+        //same as MB
     }
-
     /**
      * Subscribes to broadcast message of type {@code type} with the callback
      * {@code callback}. This means two things:
@@ -78,7 +82,7 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-
+//        same as MB
     }
 
     /**
@@ -94,7 +98,7 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-
+// same as MB
         return null;
     }
 
@@ -105,7 +109,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-
+// same as MB
     }
 
     /**
@@ -119,7 +123,7 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-
+//same as MB
     }
 
     /**
@@ -132,16 +136,14 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
-
+//only stops the event loop so don't need to test
     }
 
     /**
      * @return the name of the service - the service name is given to it in the
      *         construction time and is used mainly for debugging purposes.
      */
-    public final String getName() {
-        return null;
-    }
+    public final String getName() {return n;}
 
     /**
      * The entry point of the micro-service. TODO: you must complete this code
@@ -150,7 +152,6 @@ public abstract class MicroService implements Runnable {
     @Override
     public final void run() {
         //call register in message bus
-
     }
 
 }

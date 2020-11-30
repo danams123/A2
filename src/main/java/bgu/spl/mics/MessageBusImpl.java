@@ -1,9 +1,9 @@
 package bgu.spl.mics;
 import java.util.HashMap;
-import java.util.Queue;
-import java.util.Vector;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
  * Write your implementation here!
@@ -13,9 +13,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 //Singleton
 public class MessageBusImpl implements MessageBus {
 
-	private HashMap<MicroService,Message> services;
-	private HashMap<Class<? extends Message>,MicroService> messages;
-	private HashMap<Event,Future> futures;
+	private ConcurrentHashMap<MicroService, LinkedBlockingDeque<Message>> services;
+	private ConcurrentHashMap<Class<? extends Message>,LinkedBlockingDeque<MicroService>> messages;
+	private ConcurrentHashMap<Event,Future> futures;
+	private Object lock1, lock2, lock3, lock4;
 	//maybe change the fields to some other structures? queue? vector? think about it.
 
 	private static class MessageBusHolder {
@@ -23,10 +24,13 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	private MessageBusImpl(){
-	//what do we need here?
-		services = new HashMap<>();
-		messages = new HashMap<>();
-		futures = new HashMap<>();
+		services = new ConcurrentHashMap<>();
+		messages = new ConcurrentHashMap<>();
+		futures = new ConcurrentHashMap<>();
+		lock1 = new Object();
+		lock2 = new Object();
+		lock3 = new Object();
+		lock4 = new Object();
 	}
 
 	public static MessageBusImpl getInstance() {
@@ -34,60 +38,83 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 
-	@Override
+	@Override //TS?
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-        messages.put(type,m);
-	}
+		if(services.containsKey(m)) { //so there won't be multiple instances in the queue of messages
+			synchronized (lock1) {//so we wont create two queues
+				if (messages.containsKey(type)) { //so it will initialize properly in the first time
+					messages.put(type, new LinkedBlockingDeque<>());
+				}
+			}
+			messages.get(type).add(m);
+			}
+		}
 
-	@Override
+	@Override //TS?
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-        messages.put(type,m);
-	}
+		if(services.containsKey(m)) { //so there won't be multiple instances in the queue of messages
+			synchronized (lock2) {//so we wont create two queues
+				if (messages.containsKey(type)) { //so it will initialize properly in the first time
+					messages.put(type, new LinkedBlockingDeque<>());
+				}
+			}
+			messages.get(type).add(m);
+			}
+		}
 
-	@Override @SuppressWarnings("unchecked")
+	@Override @SuppressWarnings("unchecked") //TS
 	public <T> void complete(Event<T> e, T result) {
         futures.get(e).resolve(result);
-        futures.remove(e);
+		futures.remove(e);
 	}
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-	    MicroService swap = messages.get(b.getClass());
-        services.put(swap,b);
-        messages.remove(b.getClass(),swap);
-        messages.put(b.getClass(),swap);
+	    LinkedBlockingDeque<MicroService> toSend = messages.get(b.getClass());
+	    for(MicroService elem: toSend){
+	    	synchronized (lock3) { // so it wont unregister while we add
+				if (services.get(elem) != null) {
+					services.get(elem).add(b);
+				}
+			}
+		}
 	}
 
 
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-        Future<T> output = new Future<>();
-        MicroService swap = messages.get(e.getClass());
-        services.put(swap,e);
-        messages.remove(e.getClass(),swap);
-        messages.put(e.getClass(),swap);
-        //need to add interrupt here - do it carefully, or notifyall?
-        futures.put(e,output);
-		return output;
-	}
-
-	@Override
-	public void register(MicroService m) {
-        services.put(m,null);
-	}
-
-	@Override
-	public void unregister(MicroService m) {
-        services.remove(m);
-	}
-
-	@Override
-	public Message awaitMessage(MicroService m) throws InterruptedException {
-        while(services.get(m) == null){
-            Thread.currentThread().wait(); //do i need sleep here? notify gets interruptedexception?
-        }
-		Message output = services.get(m);
-        services.remove(m,output);
+        Future<T> output = null;
+        	MicroService swap = messages.get(e.getClass()).poll();
+        	synchronized (lock4){
+        	if (services.get(swap) != null) {
+        		services.get(swap).add(e);
+        		messages.get(e.getClass()).add(swap);
+        		output = new Future<>();
+        		futures.put(e, output);
+			}
+		}
         return output;
+	}
+
+	@Override //TS
+	public void register(MicroService m) {
+        services.put(m,new LinkedBlockingDeque<>());
+	}
+
+	@Override //TS
+	public void unregister(MicroService m) {
+		synchronized (lock3) { //to save sendB
+			synchronized (lock4) { //to save sendE
+				services.remove(m);
+				for(Class<? extends Message> key: messages.keySet()){
+					messages.get(key).remove(m);
+				}
+			}
+		}
+	}
+
+	@Override //TS
+	public Message awaitMessage(MicroService m) throws InterruptedException {
+		return services.get(m).take(); //check if we need to use try catch or throws is enough?
 	}
 }
