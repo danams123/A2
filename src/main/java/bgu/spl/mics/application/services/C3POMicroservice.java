@@ -1,10 +1,11 @@
 package bgu.spl.mics.application.services;
+import java.util.LinkedList;
 import java.util.List;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
-import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
-import bgu.spl.mics.application.passiveObjects.Ewoks;
+import bgu.spl.mics.application.passiveObjects.Ewok;
+
 
 
 /**
@@ -17,13 +18,37 @@ import bgu.spl.mics.application.passiveObjects.Ewoks;
  */
 public class C3POMicroservice extends MicroService {
 
-    public C3POMicroservice() {
+    private Diary d;
+
+    public C3POMicroservice(Diary _d) {
         super("C3PO");
+        d = _d;
     }
 
     @Override
     protected void initialize() {
-        this.subscribeEvent(AttackEvent.class, new BombCallback());
-        this.subscribeBroadcast(TerminateBroadcast.class, new TerminateCallback());
+        this.subscribeEvent(AttackEvent.class, c -> {
+            List<Ewok> toRelease = new LinkedList<>();
+            for(int serial : c.getSerials()){
+                Ewok e = c.getEwoks().getEwoksList().get(serial -1);
+                try {
+                    e.acquire();
+                }
+                catch(InterruptedException i){}
+                toRelease.add(e);
+            }
+            try{
+                Thread.sleep(c.getDuration());}
+            catch(InterruptedException i){}
+            d.setC3POFinish(System.currentTimeMillis() - d.getStartTime());
+            for(Ewok elem : toRelease){
+                elem.release();
+            }
+            this.complete(c,c.getResult());
+        });
+        this.subscribeBroadcast(TerminateBroadcast.class, c -> {
+            d.setC3POTerminate(System.currentTimeMillis() - d.getStartTime());
+            this.terminate();
+        });
     }
 }

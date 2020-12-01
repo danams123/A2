@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Diary {
 
-    private static Diary instance = null;
     private AtomicInteger totalAttacks;
+    private long startTime;
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -22,15 +22,11 @@ public class Diary {
     private long LandoTerminate;
 
     public Diary(){}
-//we don't need to make it ThreadSafe only Singleton to create the instance once. is it ok?
-    public static Diary getInstance() {
-        if(instance == null) {
-            instance = new Diary();
-        }
-        return instance;
-    }
 
-    public void setTotalAttacks(AtomicInteger _totalAttacks){totalAttacks = _totalAttacks;}
+    public void setStartTime(long _startTime){startTime = _startTime;};
+    public final long getStartTime(){return startTime;}
+
+    public void setTotalAttacks(int _totalAttacks){totalAttacks.compareAndSet(totalAttacks.intValue(),_totalAttacks);}
     public final AtomicInteger getTotalAttacks(){return totalAttacks;}
 
     public void setHanSoloFinish(long _HanSoloFinish){HanSoloFinish = _HanSoloFinish;}

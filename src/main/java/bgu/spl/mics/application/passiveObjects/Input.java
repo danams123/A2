@@ -1,6 +1,5 @@
 package bgu.spl.mics.application.passiveObjects;
 
-//Done
 public class Input {
 	private Attack[] attacks;
 	int R2D2;

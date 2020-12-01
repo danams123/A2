@@ -4,11 +4,11 @@ import bgu.spl.mics.Event;
 
 public class DeactivationEvent implements Event<Boolean> {
     private Boolean result;
-    private long duration;
 
-    public DeactivationEvent(long _duration){
+    public DeactivationEvent(){
         result = true;
-        duration = _duration;
-    };
+    }
+
+    public boolean getResult(){ return result;}
 
 }

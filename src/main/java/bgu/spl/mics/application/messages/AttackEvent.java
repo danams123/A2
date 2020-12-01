@@ -8,11 +8,13 @@ public class AttackEvent implements Event<Boolean> {
     final private long duration;
     final private List<Integer> serials;
     final private Ewoks E;
+    final private boolean result;
 
     public AttackEvent(long _duration, List<Integer> _serials, Ewoks _E){
         duration = _duration;
         serials = _serials;
         E = _E;
+        result = true;
     }
 
     public long getDuration(){return duration;}
@@ -20,4 +22,6 @@ public class AttackEvent implements Event<Boolean> {
     public List<Integer> getSerials(){return serials;}
 
     public Ewoks getEwoks(){return E;}
+
+    public boolean getResult(){ return result;}
 }

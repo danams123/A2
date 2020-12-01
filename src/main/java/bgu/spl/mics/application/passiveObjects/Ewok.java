@@ -6,10 +6,10 @@ package bgu.spl.mics.application.passiveObjects;
  * <p>
  * You may add fields and methods to this class as you see fit (including public methods).
  */
-// shared resource - we need to make it thread safe
+
 public class Ewok {
-	int serialNumber; //AtomicInteger?
-	boolean available; //AtomicBoolean?
+	int serialNumber;
+	boolean available;
 
     public Ewok(int serialNumber){
         this.serialNumber = serialNumber;
@@ -19,12 +19,20 @@ public class Ewok {
     /**
      * Acquires an Ewok
      */
-    public void acquire() { available = false;}
+    public synchronized void acquire() throws InterruptedException {
+        while(!available){
+            wait();
+        }
+        available = false;
+    }
 
     /**
      * release an Ewok
      */
-    public void release() { available = true;}
+    public synchronized void release() {
+        available = true;
+        notifyAll();
+    }
 
     public boolean getAvailable(){return available;}
 
