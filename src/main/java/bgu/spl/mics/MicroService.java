@@ -23,18 +23,20 @@ import java.util.concurrent.LinkedBlockingDeque;
  */
 public abstract class MicroService implements Runnable {
 
-    private ConcurrentHashMap<Class<? extends  Message>, Class<? extends Callback>> callbacks;
-    private LinkedBlockingDeque<Future> futures;
-    private String n;
+    private ConcurrentHashMap<Class<? extends  Message>, Callback> callbacks;
+    private String name;
+    private MessageBusImpl mb;
+    private boolean stop;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
      */
     public MicroService(String name) {
-        n = name;
+        this.name = name;
+        mb = MessageBusImpl.getInstance();
         callbacks = new ConcurrentHashMap<>();
-        futures = new LinkedBlockingDeque<>();
+        stop = false;
     }
 
     /**
@@ -59,7 +61,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-        //same as MB
+        callbacks.put(type,callback);
+        mb.subscribeEvent(type,this);
     }
     /**
      * Subscribes to broadcast message of type {@code type} with the callback
@@ -82,7 +85,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-//        same as MB
+        callbacks.put(type,callback);
+        mb.subscribeBroadcast(type,this);
     }
 
     /**
@@ -97,10 +101,7 @@ public abstract class MicroService implements Runnable {
      *         			micro-service processing this event.
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
-    protected final <T> Future<T> sendEvent(Event<T> e) {
-// same as MB
-        return null;
-    }
+    protected final <T> Future<T> sendEvent(Event<T> e) {return mb.sendEvent(e);}
 
     /**
      * A Micro-Service calls this method in order to send the broadcast message {@code b} using the message-bus
@@ -108,9 +109,7 @@ public abstract class MicroService implements Runnable {
      * <p>
      * @param b The broadcast message to send
      */
-    protected final void sendBroadcast(Broadcast b) {
-// same as MB
-    }
+    protected final void sendBroadcast(Broadcast b) {mb.sendBroadcast(b);}
 
     /**
      * Completes the received request {@code e} with the result {@code result}
@@ -122,9 +121,7 @@ public abstract class MicroService implements Runnable {
      * @param result The result to resolve the relevant Future object.
      *               {@code e}.
      */
-    protected final <T> void complete(Event<T> e, T result) {
-//same as MB
-    }
+    protected final <T> void complete(Event<T> e, T result) {mb.complete(e,result);}
 
     /**
      * this method is called once when the event loop starts.
@@ -135,15 +132,13 @@ public abstract class MicroService implements Runnable {
      * Signals the event loop that it must terminate after handling the current
      * message.
      */
-    protected final void terminate() {
-//only stops the event loop so don't need to test
-    }
+    protected final void terminate() {stop = true;}
 
     /**
      * @return the name of the service - the service name is given to it in the
      *         construction time and is used mainly for debugging purposes.
      */
-    public final String getName() {return n;}
+    public final String getName() {return name;}
 
     /**
      * The entry point of the micro-service. TODO: you must complete this code
@@ -151,7 +146,16 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-        //call register in message bus
+        mb.register(this);
+        initialize();
+        while(!stop){
+            Message m = null;
+            try {
+                m = mb.awaitMessage(this);
+            } catch (InterruptedException e) {}
+           callbacks.get(m).call(m); //complete is called from call if necessary
+        }
+        mb.unregister(this);
     }
 
 }

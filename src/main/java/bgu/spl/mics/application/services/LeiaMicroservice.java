@@ -8,6 +8,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 /**
  * LeiaMicroservices Initialized with Attack objects, and sends them as  {@link AttackEvent}.
@@ -19,31 +20,30 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
-    private TerminateCallback t; //will be added to a Hashmap of Microservice
-    private ConcurrentLinkedDeque<Future> futures; // do we need concurrent?
+    private Ewoks E;
 
-    public LeiaMicroservice(Attack[] attacks) {
+    public LeiaMicroservice(Attack[] attacks, Ewoks _E) {
         super("Leia");
         this.attacks = attacks;
-        t = new TerminateCallback();
-        futures = new ConcurrentLinkedDeque<>(); //in Microservice
+        E = _E;
     }
 
     @Override
     protected void initialize() {
-        this.subscribeBroadcast(TerminateBroadcast.class, t);
+        this.subscribeBroadcast(TerminateBroadcast.class, new TerminateCallback());
+        //sort of attacks
         for(Attack elem : attacks){
-            futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials())));
+            try{
+                this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials(),E)).get();}
+            catch(InterruptedException i){}
         }
-        while(!futures.isEmpty()){ //do we need blockingqueue?
-            Future f = futures.poll();
-            f.get(); //is it good? do we need to consider the option in which the first event takes longer to finish than the others?
-            //prioritize by durations in attacks and by serials.
-        }
-        futures.add(this.sendEvent(new DeactivationEvent()));
-        futures.poll().get();//is it good?
-        futures.add(this.sendEvent(new BombDestroyerEvent()));
-        futures.poll().get();//is it good?
+        try{
+            this.sendEvent(new DeactivationEvent()).get();}
+        catch(InterruptedException i){}
+        try{
+            this.sendEvent(new BombDestroyerEvent()).get();}
+        catch(InterruptedException i){}
         this.sendBroadcast(new TerminateBroadcast());
     }
+
 }

@@ -59,8 +59,8 @@ public class MessageBusImpl implements MessageBus {
 				}
 			}
 			messages.get(type).add(m);
-			}
 		}
+	}
 
 	@Override @SuppressWarnings("unchecked") //TS
 	public <T> void complete(Event<T> e, T result) {
