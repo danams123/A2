@@ -25,8 +25,10 @@ public class Main {
 	public static void main(String[] args){
 		Input input = null;
 		try {
-			input = JsonInputReader.getInputFromJson(args[1]);}
-		catch (IOException e) {}
+			input = JsonInputReader.getInputFromJson(args[0]);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		Diary d = new Diary();
 		d.setTotalAttacks(input.getAttacks().length);
@@ -62,7 +64,7 @@ public class Main {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		Writer writer = null;
 		try {
-			writer = Files.newBufferedWriter(Paths.get("../../../../../output.json"));
+			writer = Files.newBufferedWriter(Paths.get("output.json"));
 			writer.write("There are" + d.getTotalAttacks() + "attacks.");
 			long attacksEnd = (d.getHanSoloFinish() - d.getC3POFinish());
 			writer.write("HanSolo and C3PO finish their tasks " +  attacksEnd + " miliseconds one after the other.");

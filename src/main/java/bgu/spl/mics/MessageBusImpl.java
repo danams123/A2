@@ -42,23 +42,23 @@ public class MessageBusImpl implements MessageBus {
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		if(services.containsKey(m)) { //so there won't be multiple instances in the queue of messages
 			synchronized (lock1) {//so we wont create two queues
-				if (messages.containsKey(type)) { //so it will initialize properly in the first time
+				if (!messages.containsKey(type)) { //so it will initialize properly in the first time
 					messages.put(type, new LinkedBlockingDeque<>());
 				}
+				messages.get(type).add(m);
 			}
-			messages.get(type).add(m);
-			}
+		}
 		}
 
 	@Override //TS?
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
 		if(services.containsKey(m)) { //so there won't be multiple instances in the queue of messages
 			synchronized (lock2) {//so we wont create two queues
-				if (messages.containsKey(type)) { //so it will initialize properly in the first time
+				if (!messages.containsKey(type)) { //so it will initialize properly in the first time
 					messages.put(type, new LinkedBlockingDeque<>());
 				}
+				messages.get(type).add(m);
 			}
-			messages.get(type).add(m);
 		}
 	}
 
