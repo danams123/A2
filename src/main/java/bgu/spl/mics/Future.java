@@ -18,7 +18,8 @@ public class Future<T> {
 	 * This should be the the only public constructor in this class.
 	 */
 	public Future() {
-
+		isDone = false;
+		result = null;
 	}
 
 	/**
@@ -43,6 +44,7 @@ public class Future<T> {
 		this.result = result;
 		isDone = true;
 		notifyAll();
+		System.out.println(this + " has been resolved and notifyall was called!");
 	}
 
 	/**
@@ -64,7 +66,7 @@ public class Future<T> {
 	 *         elapsed, return null.
 	 */
 	public synchronized T get(long timeout, TimeUnit unit) throws InterruptedException {
-		while(!isDone){
+		if (!isDone){
 			unit.timedWait(this,timeout);
 		}
 		if(!isDone) return null;

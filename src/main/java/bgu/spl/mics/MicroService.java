@@ -62,6 +62,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         callbacks.put(type,callback);
+        System.out.println(callback +" is in callbacks Hashmap with Event of type " + type + " for " + this.getName());
         mb.subscribeEvent(type,this);
     }
     /**
@@ -86,6 +87,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         callbacks.put(type,callback);
+        System.out.println(callback +" is in callbacks Hashmap with Broadcast of type " + type + " for " + this.getName());
         mb.subscribeBroadcast(type,this);
     }
 
@@ -101,7 +103,10 @@ public abstract class MicroService implements Runnable {
      *         			micro-service processing this event.
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
-    protected final <T> Future<T> sendEvent(Event<T> e) {return mb.sendEvent(e);}
+    protected final <T> Future<T> sendEvent(Event<T> e) {
+        System.out.println(this.getName() + " called sendEvent");
+        return mb.sendEvent(e);
+    }
 
     /**
      * A Micro-Service calls this method in order to send the broadcast message {@code b} using the message-bus
@@ -109,7 +114,10 @@ public abstract class MicroService implements Runnable {
      * <p>
      * @param b The broadcast message to send
      */
-    protected final void sendBroadcast(Broadcast b) {mb.sendBroadcast(b);}
+    protected final void sendBroadcast(Broadcast b) {
+        System.out.println(this.getName() + " called sendBroadcast");
+        mb.sendBroadcast(b);
+    }
 
     /**
      * Completes the received request {@code e} with the result {@code result}
@@ -121,7 +129,10 @@ public abstract class MicroService implements Runnable {
      * @param result The result to resolve the relevant Future object.
      *               {@code e}.
      */
-    protected final <T> void complete(Event<T> e, T result) {mb.complete(e,result);}
+    protected final <T> void complete(Event<T> e, T result) {
+        System.out.println(this.getName() + " called complete");
+        mb.complete(e,result);
+    }
 
     /**
      * this method is called once when the event loop starts.
@@ -132,7 +143,10 @@ public abstract class MicroService implements Runnable {
      * Signals the event loop that it must terminate after handling the current
      * message.
      */
-    protected final void terminate() {stop = true;}
+    protected final void terminate() {
+        System.out.println("terminate was called for " + this.getName());
+        stop = true;
+    }
 
     /**
      * @return the name of the service - the service name is given to it in the
@@ -147,15 +161,22 @@ public abstract class MicroService implements Runnable {
     @Override
     public final void run() {
         mb.register(this);
+        System.out.println(this.getName() + " has registered for the MessageBus!");
         initialize();
+        System.out.println("initialization finished for " + this.getName());
         while(!stop){
+            System.out.println(this.getName() + " has entered the event loop!");
             Message m = null;
             try {
+                long time = System.currentTimeMillis();
                 m = mb.awaitMessage(this);
+                System.out.println("message " + m + " got fetched by " + this.getName() + " after waiting " + (System.currentTimeMillis() - time));
             } catch (InterruptedException e) {}
            callbacks.get(m.getClass()).call(m); //complete is called from call if necessary
+            System.out.println("call finished for " + this.getName());
         }
         mb.unregister(this);
+        System.out.println(this.getName() + " has unregistered and finished it's run");
     }
 
 }

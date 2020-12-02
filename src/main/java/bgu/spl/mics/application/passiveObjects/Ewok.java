@@ -32,6 +32,7 @@ public class Ewok {
     public synchronized void release() {
         available = true;
         notifyAll();
+        System.out.println(this + " has been released and notifyall was called!");
     }
 
     public boolean getAvailable(){return available;}

@@ -25,12 +25,14 @@ public class LandoMicroservice  extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(BombDestroyerEvent.class, c -> {
+            System.out.println("BombDestroyerCall was called for " + this.getName());
             try{
             Thread.sleep(duration);}
             catch(InterruptedException i){}
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
+            System.out.println("TerminateCall was called for " + this.getName());
             d.setLandoTerminate(System.currentTimeMillis() - d.getStartTime());
             this.terminate();
         });

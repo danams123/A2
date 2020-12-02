@@ -28,17 +28,24 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(AttackEvent.class, c -> {
+            System.out.println("AttackCall was called for " + this.getName());
             List<Ewok> toRelease = new LinkedList<>();
             for(int serial : c.getSerials()){
                 Ewok e = c.getEwoks().getEwoksList().get(serial -1);
                 try {
+                    long time = System.currentTimeMillis();
                     e.acquire();
+                    System.out.println("The Ewok " + e.getNum() + " was acquired after waiting " + (System.currentTimeMillis() - time));
                 }
                 catch(InterruptedException i){}
                 toRelease.add(e);
             }
             try{
-                Thread.sleep(c.getDuration());}
+                long time = System.currentTimeMillis();
+                Thread.sleep(c.getDuration());
+                System.out.println(this.getName() + " Attacked Endor successfully and slept for " + (System.currentTimeMillis() - time)
+                 + " and the expected sleep duration is: " + c.getDuration());
+            }
             catch(InterruptedException i){}
             d.setC3POFinish(System.currentTimeMillis() - d.getStartTime());
             for(Ewok elem : toRelease){
@@ -47,6 +54,7 @@ public class C3POMicroservice extends MicroService {
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
+            System.out.println("TerminateCall was called for " + this.getName());
             d.setC3POTerminate(System.currentTimeMillis() - d.getStartTime());
             this.terminate();
         });

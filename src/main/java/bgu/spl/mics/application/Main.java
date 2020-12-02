@@ -23,22 +23,29 @@ import java.lang.Math;
  */
 public class Main {
 	public static void main(String[] args){
+		System.out.println("Star Wars - Episode VI: Return of the Jedi");
 		Input input = null;
 		try {
 			input = JsonInputReader.getInputFromJson(args[0]);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		System.out.println("In a galaxy FAR FAR AWAY ...");
 		Diary d = new Diary();
 		d.setTotalAttacks(input.getAttacks().length);
 		LeiaMicroservice Leia = new LeiaMicroservice(input.getAttacks(),new Ewoks(input.getEwoks()),d);
+		System.out.println("Leia arrived");
 		HanSoloMicroservice Han = new HanSoloMicroservice(d);
+		System.out.println("Han arrived");
 		C3POMicroservice C3PO = new C3POMicroservice(d);
+		System.out.println("C3PO arrived");
 		R2D2Microservice R2D2 = new R2D2Microservice(input.getR2D2(),d);
+		System.out.println("R2D2 arrived");
 		LandoMicroservice Lando = new LandoMicroservice(input.getLando(),d);
+		System.out.println("Lando arrived");
 
 		d.setStartTime(System.currentTimeMillis());
+		System.out.println("start time set");
 
 		Thread t1 = new Thread(Leia);
 		Thread t2 = new Thread(Han);
@@ -61,20 +68,31 @@ public class Main {
 		}
 		catch(InterruptedException i){}
 
+		System.out.println("Mission Accomplished! printing Diary");
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		Writer writer = null;
 		try {
 			writer = Files.newBufferedWriter(Paths.get("output.json"));
-			writer.write("There are" + d.getTotalAttacks() + "attacks.");
-			long attacksEnd = (d.getHanSoloFinish() - d.getC3POFinish());
-			writer.write("HanSolo and C3PO finish their tasks " +  attacksEnd + " miliseconds one after the other.");
-			//miliseconds as Timeunits?
-			long deactivateEnd = (d.getR2D2Deactivate() - attacksEnd);
-			writer.write("R2D2 has deactivated the force shield " + deactivateEnd + " miliseconds after the attacks.");
-			long terminateTime = Math.max(Math.max(Math.max(Math.max(d.getLeiaTerminate(), d.getC3POTerminate()),
-					d.getHanSoloTerminate()),d.getR2D2Terminate()),d.getLandoTerminate()) - deactivateEnd;
-			//maybe there is a better way with timestamp?
-			writer.write("All threads terminate " + terminateTime + " milliseconds later.");
+//			writer.write("There are " + d.getTotalAttacks() + " attacks. \n");
+//			long attacksEnd = (d.getC3POFinish() - d.getHanSoloFinish());
+//			writer.write("HanSolo and C3PO finish their tasks " +  attacksEnd + " miliseconds one after the other. \n");
+//			//miliseconds as Timeunits?
+//			long deactivateEnd = (d.getR2D2Deactivate() - attacksEnd);
+//			writer.write("R2D2 has deactivated the force shield " + deactivateEnd + " miliseconds after the attacks. \n");
+//			long terminateTime = Math.max(Math.max(Math.max(Math.max(d.getLeiaTerminate(), d.getC3POTerminate()),
+//					d.getHanSoloTerminate()),d.getR2D2Terminate()),d.getLandoTerminate()) - deactivateEnd;
+//			//maybe there is a better way with timestamp?
+//			writer.write("All threads terminate " + terminateTime + " milliseconds later.");
+			writer.flush();
+			writer.write("totalAttacks: " + d.getTotalAttacks());
+			writer.write("\n HanSoloFinish: " + d.getHanSoloFinish());
+			writer.write("\n C3POFinish: " + d.getC3POFinish());
+			writer.write("\n R2D2Deactivate: " + d.getR2D2Deactivate());
+			writer.write("\n LeiaTerminate: " + d.getLeiaTerminate());
+			writer.write("\n HanSoloTerminate: " + d.getHanSoloTerminate());
+			writer.write("\n C3POTerminate: " + d.getC3POTerminate());
+			writer.write("\n R2D2Terminate: " + d.getR2D2Terminate());
+			writer.write("\n LandoTerminate: " + d.getLandoTerminate());
 			writer.close();}
 		catch (IOException e) {}
 		//		Type diaryType = new TypeToken<Diary>() {}.getType();
