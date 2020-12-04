@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.services;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Diary;
@@ -19,10 +21,12 @@ import bgu.spl.mics.application.passiveObjects.Ewok;
 public class C3POMicroservice extends MicroService {
 
     private Diary d;
+    private CountDownLatch latch;
 
-    public C3POMicroservice(Diary _d) {
+    public C3POMicroservice(CountDownLatch latch) {
         super("C3PO");
-        d = _d;
+        d = Diary.getInstance();
+        this.latch = latch;
     }
 
     @Override
@@ -53,6 +57,7 @@ public class C3POMicroservice extends MicroService {
             }
             this.complete(c,c.getResult());
         });
+        latch.countDown();
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             System.out.println("TerminateCall was called for " + this.getName());
             d.setC3POTerminate(System.currentTimeMillis() - d.getStartTime());

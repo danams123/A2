@@ -14,13 +14,22 @@ import java.util.ArrayList;
 public class Ewoks {
     final private ArrayList<Ewok> EwoksList;
 
-    public Ewoks(int EwokNum) {
-        EwoksList = new ArrayList<>(EwokNum);
-        for (int i = 1; i <= EwokNum; i++) {
-            EwoksList.add(new Ewok(i));
-        }
+    private static class SingletonHolder {
+        private static Ewoks instance = new Ewoks();
+    }
+
+    public Ewoks() {
+        EwoksList = new ArrayList<>();
     }
 
 
-    public ArrayList<Ewok> getEwoksList(){return EwoksList;}
+    public static Ewoks getInstance() {
+        return SingletonHolder.instance;
+    }
+
+    public final ArrayList<Ewok> getEwoksList(){return EwoksList;}
+
+    public void add(Ewok e){
+        EwoksList.add(e);
+    }
 }

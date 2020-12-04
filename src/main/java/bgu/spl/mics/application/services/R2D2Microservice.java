@@ -3,6 +3,8 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Diary;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * R2D2Microservices is in charge of the handling {@link DeactivationEvent}.
  * This class may not hold references for objects which it is not responsible for:
@@ -15,11 +17,13 @@ public class R2D2Microservice extends MicroService {
 
     private long duration;
     private Diary d;
+    private CountDownLatch latch;
 
-    public R2D2Microservice(long _duration, Diary _d) {
+    public R2D2Microservice(long _duration, CountDownLatch latch) {
         super("R2D2");
         duration = _duration;
-        d = _d;
+        d = Diary.getInstance();
+        this.latch = latch;
     }
 
     @Override
@@ -36,6 +40,7 @@ public class R2D2Microservice extends MicroService {
             d.setR2D2Deactivate(System.currentTimeMillis() - d.getStartTime());
             this.complete(c,c.getResult());
         });
+        latch.countDown();
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             System.out.println("TerminateCall was called for " + this.getName());
             d.setR2D2Terminate(System.currentTimeMillis() - d.getStartTime());

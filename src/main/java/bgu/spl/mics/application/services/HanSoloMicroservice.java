@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import bgu.spl.mics.MicroService;
 
@@ -21,10 +22,12 @@ import bgu.spl.mics.application.passiveObjects.Ewok;
  */
 public class HanSoloMicroservice extends MicroService {
     private Diary d;
+    private CountDownLatch latch;
 
-    public HanSoloMicroservice(Diary _d) {
+    public HanSoloMicroservice(CountDownLatch latch) {
         super("Han");
-        d = _d;
+        d = Diary.getInstance();
+        this.latch = latch;
     }
 
 
@@ -56,6 +59,7 @@ public class HanSoloMicroservice extends MicroService {
             }
             this.complete(c,c.getResult());
         });
+        latch.countDown();
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             System.out.println("TerminateCall was called for " + this.getName());
             d.setHanSoloTerminate(System.currentTimeMillis() - d.getStartTime());

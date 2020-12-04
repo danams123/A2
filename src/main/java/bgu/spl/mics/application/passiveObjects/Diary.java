@@ -21,7 +21,16 @@ public class Diary {
     private long R2D2Terminate;
     private long LandoTerminate;
 
-    public Diary(){}
+    private static class SingletonHolder {
+        private static Diary instance = new Diary();
+    }
+
+    private Diary(){}
+
+    public static Diary getInstance() {
+        return SingletonHolder.instance;
+    }
+
 
     public void setStartTime(long _startTime){startTime = _startTime;};
     public final long getStartTime(){return startTime;}

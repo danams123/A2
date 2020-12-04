@@ -1,7 +1,10 @@
 package bgu.spl.mics.application.services;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
+import bgu.spl.mics.Future;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
@@ -17,15 +20,17 @@ import bgu.spl.mics.application.passiveObjects.Ewoks;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LeiaMicroservice extends MicroService {
+    private ConcurrentLinkedDeque<Future> futures;
     private Attack[] attacks;
     private Ewoks E;
     private Diary d;
 
-    public LeiaMicroservice(Attack[] attacks, Ewoks _E, Diary _d) {
+    public LeiaMicroservice(Attack[] attacks, Ewoks _E) {
         super("Leia");
         this.attacks = attacks;
         E = _E;
-        d = _d;
+        d = Diary.getInstance();
+        futures = new ConcurrentLinkedDeque<>();
     }
 
     @Override
@@ -41,9 +46,13 @@ public class LeiaMicroservice extends MicroService {
         System.out.println("attacks array after the sort is " + attacks);
        //check this sort fucker
         for(Attack elem : attacks){
-            try{
-                this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials(),E)).get();}
-            catch(InterruptedException i){}
+            futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials(),E)));
+        }
+
+        for(Future f: futures){
+            try {
+                f.get();
+            } catch (InterruptedException e) {}
         }
         try{
             this.sendEvent(new DeactivationEvent()).get();}

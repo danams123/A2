@@ -1,6 +1,4 @@
 package bgu.spl.mics;
-import java.util.HashMap;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -19,7 +17,7 @@ public class MessageBusImpl implements MessageBus {
 	private Object lock1, lock2, lock3, lock4;
 	//maybe change the fields to some other structures? queue? vector? think about it.
 
-	private static class MessageBusHolder {
+	private static class SingletonHolder {
 		private static MessageBusImpl instance = new MessageBusImpl();
 	}
 
@@ -35,7 +33,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	public static MessageBusImpl getInstance() {
-		return MessageBusHolder.instance;
+		return SingletonHolder.instance;
 	}
 
 
