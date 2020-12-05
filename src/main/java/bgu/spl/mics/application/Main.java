@@ -34,6 +34,13 @@ public class Main {
 			e.printStackTrace();
 		}
 
+//		try {
+//			GeneratedTests g = new GeneratedTests(1);
+//			g.runTest();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+
 //		System.out.println("Star Wars - Episode VI: Return of the Jedi");
 //		Input input = null;
 //		try {

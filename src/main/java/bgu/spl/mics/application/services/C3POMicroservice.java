@@ -1,4 +1,6 @@
 package bgu.spl.mics.application.services;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -33,7 +35,7 @@ public class C3POMicroservice extends MicroService {
     protected void initialize() {
         this.subscribeEvent(AttackEvent.class, c -> {
             System.out.println("AttackCall " + c.getDuration() + " was called for " + this.getName());
-            List<Ewok> toRelease = new LinkedList<>();
+            ArrayList<Ewok> toRelease = new ArrayList<>();
             for(int serial : c.getSerials()){
                 Ewok e = c.getEwoks().getEwoksList().get(serial -1);
                 long time = System.currentTimeMillis();
@@ -50,9 +52,10 @@ public class C3POMicroservice extends MicroService {
             }
             catch(InterruptedException i){}
             d.setC3POFinish(System.currentTimeMillis() - d.getStartTime());
-            for(Ewok elem : toRelease){
-                c.getEwoks().release(elem.getNum(), 2);
-            }
+//            for (int i = 0; i < toRelease.size(); i++) {
+//                c.getEwoks().release(toRelease.get(i).getNum(),2);
+            c.getEwoks().releaseAll(2, toRelease,2);
+//            }
             this.complete(c,c.getResult());
         });
         latch.countDown();

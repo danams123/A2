@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.services;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -35,7 +36,7 @@ public class HanSoloMicroservice extends MicroService {
     protected void initialize() {
         this.subscribeEvent(AttackEvent.class, c -> {
             System.out.println("AttackCall " + c.getDuration() + " was called for " + this.getName());
-            List<Ewok> toRelease = new LinkedList<>();
+            ArrayList<Ewok> toRelease = new ArrayList<>();
            for(int serial : c.getSerials()){
                //maybe we can change that to nums only instead of Ewoks? in C3PO as well
                 Ewok e = c.getEwoks().getEwoksList().get(serial - 1);
@@ -54,9 +55,10 @@ public class HanSoloMicroservice extends MicroService {
             }
             catch(InterruptedException i){}
             d.setHanSoloFinish(System.currentTimeMillis() - d.getStartTime());
-            for(Ewok elem : toRelease){
-                c.getEwoks().release(elem.getNum(),1);
-            }
+//            for (int i = 0; i < toRelease.size(); i++) {
+//                c.getEwoks().release(toRelease.get(i).getNum(),1);
+//            }
+            c.getEwoks().releaseAll(1, toRelease,2);
             this.complete(c,c.getResult());
         });
         latch.countDown();

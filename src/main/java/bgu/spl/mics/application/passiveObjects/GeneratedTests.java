@@ -106,6 +106,28 @@ public class GeneratedTests {
         return output;
     }
 
+    public void runTest() throws IOException {
+        List<Integer> a1 = new LinkedList<>();
+        a1.add(1); a1.add(8); a1.add(3); a1.add(4); a1.add(9); a1.add(2); a1.add(5); a1.add(7); a1.add(6);
+        Attack a = new Attack(a1, 1201);
+        List<Integer> b1 = new LinkedList<>();
+        b1.add(1); b1.add(2); b1.add(6); b1.add(7); b1.add(5); b1.add(3); b1.add(4);
+        Attack b = new Attack(b1, 1685);
+        List<Integer> c1 = new LinkedList<>();
+        c1.add(1); c1.add(2); c1.add(5); c1.add(7); c1.add(3); c1.add(4); c1.add(6);
+        Attack c = new Attack(c1, 9846);
+        List<Integer> d1 = new LinkedList<>();
+        d1.add(1); d1.add(5); d1.add(7); d1.add(9); d1.add(3); d1.add(4); d1.add(8); d1.add(6); d1.add(2);
+        Attack d = new Attack(d1, 1199);
+        List<Integer> e1 = new LinkedList<>();
+        e1.add(4); e1.add(7); e1.add(5); e1.add(1); e1.add(2); e1.add(3); e1.add(6);
+        Attack e = new Attack(e1, 3281);
+        Attack[] a2 = new Attack[5];
+        a2[0] = a; a2[1] = b; a2[2] = c; a2[3] = d; a2[4] = e;
+        GeneratedInput g = new GeneratedInput(a2, 7081, 5986, 10);
+        toTest(g,1);
+    }
+
     public void toTest(GeneratedInput input, int iter) throws IOException {
         System.out.println("----------------Test number: " + iter +" ------------------");
         System.out.println("Star Wars - Episode VI: Return of the Jedi");
@@ -156,11 +178,12 @@ public class GeneratedTests {
             t5.join();
         } catch (InterruptedException i) {
         }
-
+        ewoks.clear();
         System.out.println("Mission Accomplished! printing Diary");
 
         //output json
         write(d, input, iter);
+        d.setTotalAttacks(0);
     }
 
 

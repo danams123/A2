@@ -22,6 +22,7 @@ public class Ewok {
     //check if works without sync here
     public synchronized void acquire() throws InterruptedException {
         System.out.println(Thread.currentThread().getName() + " is in acquire of Ewok for " + serialNumber);
+        System.out.println(available);
         while(!available){
             wait();
         }
