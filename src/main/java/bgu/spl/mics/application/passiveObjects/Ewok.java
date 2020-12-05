@@ -19,7 +19,9 @@ public class Ewok {
     /**
      * Acquires an Ewok
      */
+    //check if works without sync here
     public synchronized void acquire() throws InterruptedException {
+        System.out.println(Thread.currentThread().getName() + " is in acquire of Ewok for " + serialNumber);
         while(!available){
             wait();
         }
@@ -29,10 +31,12 @@ public class Ewok {
     /**
      * release an Ewok
      */
+    //check if works without sync here
     public synchronized void release() {
+        System.out.println(Thread.currentThread().getName() + " is in release of Ewok for " + serialNumber);
         available = true;
-        notifyAll();
         System.out.println(this + " has been released and notifyall was called!");
+        notifyAll();
     }
 
     public boolean getAvailable(){return available;}

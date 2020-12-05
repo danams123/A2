@@ -39,32 +39,32 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override //TS?
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		System.out.println(m.getName() + " called subscribeEvent");
+		System.out.println(m.getName() + " called subscribeEvent in MessageBus");
 		if(services.containsKey(m)) { //so there won't be multiple instances in the queue of messages
 			synchronized (lock1) {//so we wont create two queues
 				if (!messages.containsKey(type)) { //so it will initialize properly in the first time
 					messages.put(type, new LinkedBlockingDeque<>());
-					System.out.println("A new queue has been created in messages for " + type);
+					System.out.println(m.getName() + ": A new queue has been created in messages for " + type.getName());
 				}
 				messages.get(type).add(m);
-				System.out.println(m + " was added to messages in the queue for " + type);
-				System.out.println("the current keySet of messages is " + messages.keySet());
+				System.out.println(m.getName() + " was added to messages in the queue for " + type.getName());
+				System.out.println(m.getName() + ": the current keySet of messages is " + messages.keySet());
 			}
 		}
 		}
 
 	@Override //TS?
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		System.out.println(m.getName() + " called subscribeBroadcast");
+		System.out.println(m.getName() + " called subscribeBroadcast in MessageBus");
 		if(services.containsKey(m)) { //so there won't be multiple instances in the queue of messages
 			synchronized (lock2) {//so we wont create two queues
 				if (!messages.containsKey(type)) { //so it will initialize properly in the first time
 					messages.put(type, new LinkedBlockingDeque<>());
-					System.out.println("A new queue has been created in messages for " + type);
+					System.out.println(m.getName() + ": A new queue has been created in messages for " + type.getName());
 				}
 				messages.get(type).add(m);
-				System.out.println(m + " was added to messages in the queue for " + type);
-				System.out.println("the current keySet of messages is " + messages.keySet());
+				System.out.println(m.getName() + " was added to messages in the queue for " + type.getName());
+				System.out.println(m.getName() + ": the current keySet of messages is " + messages.keySet());
 
 			}
 		}
@@ -82,13 +82,13 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void sendBroadcast(Broadcast b) {
 	    LinkedBlockingDeque<MicroService> toSend = messages.get(b.getClass());
-		System.out.println("MessageBus needs to send the Broadcast " + b);
+		System.out.println("MessageBus needs to send the Broadcast " + b.getName());
 	    for(MicroService elem: toSend){
 	    	synchronized (lock3) { // so it wont unregister while we add
-				System.out.println("the value of elem is: " + elem);
+				System.out.println("the value of elem is: " + elem.getName());
 				if (services.get(elem) != null) {
 					services.get(elem).add(b);
-					System.out.println(b + " was added to " + elem + " in services: " + services.get(elem));
+					System.out.println(b + " was added to " + elem.getName() + " in services: " + services.get(elem));
 				}
 			}
 		}
@@ -99,14 +99,14 @@ public class MessageBusImpl implements MessageBus {
 	public <T> Future<T> sendEvent(Event<T> e) {
         Future<T> output = null;
         MicroService swap = messages.get(e.getClass()).poll();
-		System.out.println(swap + " is out of messages for " + e.getClass() + " the queue is: " + messages.get(e.getClass()));
-		System.out.println("MessageBus needs to send the Event " + e + " to " + swap);
+		System.out.println(swap.getName() + " is out of messages for " + e.getClass().getName() + " the queue is: " + messages.get(e.getClass()));
+		System.out.println("MessageBus needs to send the Event " + e.getName() + " to " + swap.getName());
         	synchronized (lock4){
         	if (services.get(swap) != null) {
         		services.get(swap).add(e);
-				System.out.println(e + " was added to " + swap + "in services: " + services.get(swap));
+				System.out.println(e.getName() + " was added to " + swap.getName() + "in services: " + services.get(swap));
         		messages.get(e.getClass()).add(swap);
-				System.out.println(swap + " is back in the end of the queue: " + messages.get(e.getClass()));
+				System.out.println(swap.getName() + " is back in the end of the queue: " + messages.get(e.getClass()));
         		output = new Future<>();
 				System.out.println("the future output is: " + output);
         		futures.put(e, output);
@@ -130,7 +130,7 @@ public class MessageBusImpl implements MessageBus {
 				System.out.println(m.getName() + " is out of services: " + services.keySet());
 				for(Class<? extends Message> key: messages.keySet()){
 					messages.get(key).remove(m);
-					System.out.println(m.getName() + " is out of messages for " + key + " check: " + messages.get(key));
+					System.out.println(m.getName() + " is out of messages for " + key.getName() + " check: " + messages.get(key));
 				}
 			}
 		}
@@ -139,7 +139,7 @@ public class MessageBusImpl implements MessageBus {
 	@Override //TS
 	public Message awaitMessage(MicroService m) throws InterruptedException {
 		Message forDebug = services.get(m).take();
-		System.out.println(forDebug + " is out of services for " + m.getName() + " check: " + services.get(m));
+		System.out.println(forDebug.getName() + " is out of services for " + m.getName() + " check: " + services.get(m));
 		return forDebug;
 //		return services.get(m).take(); //check if we need to use try catch or throws is enough?
 	}

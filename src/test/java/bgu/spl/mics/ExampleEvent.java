@@ -8,7 +8,7 @@ public class ExampleEvent implements Event{
         this.senderName = senderName;
     }
 
-    public String getSenderName() {
+    public String getName() {
         return senderName;
     }
 }

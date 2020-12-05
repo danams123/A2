@@ -32,28 +32,26 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(AttackEvent.class, c -> {
-            System.out.println("AttackCall was called for " + this.getName());
+            System.out.println("AttackCall " + c.getDuration() + " was called for " + this.getName());
             List<Ewok> toRelease = new LinkedList<>();
             for(int serial : c.getSerials()){
                 Ewok e = c.getEwoks().getEwoksList().get(serial -1);
-                try {
-                    long time = System.currentTimeMillis();
-                    e.acquire();
-                    System.out.println("The Ewok " + e.getNum() + " was acquired after waiting " + (System.currentTimeMillis() - time));
-                }
-                catch(InterruptedException i){}
+                long time = System.currentTimeMillis();
+                c.getEwoks().acquire(e.getNum(), 2);
+                System.out.println(this.getName() + ": The Ewok " + e.getNum() + " was acquired after waiting " + (System.currentTimeMillis() - time));
                 toRelease.add(e);
             }
             try{
                 long time = System.currentTimeMillis();
                 Thread.sleep(c.getDuration());
+                d.setTotalAttacks(d.getTotalAttacks() + 1);
                 System.out.println(this.getName() + " Attacked Endor successfully and slept for " + (System.currentTimeMillis() - time)
                  + " and the expected sleep duration is: " + c.getDuration());
             }
             catch(InterruptedException i){}
             d.setC3POFinish(System.currentTimeMillis() - d.getStartTime());
             for(Ewok elem : toRelease){
-                elem.release();
+                c.getEwoks().release(elem.getNum(), 2);
             }
             this.complete(c,c.getResult());
         });

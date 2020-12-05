@@ -25,7 +25,9 @@ public class Diary {
         private static Diary instance = new Diary();
     }
 
-    private Diary(){}
+    private Diary(){
+        totalAttacks = 0;
+    }
 
     public static Diary getInstance() {
         return SingletonHolder.instance;

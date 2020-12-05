@@ -62,7 +62,8 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         callbacks.put(type,callback);
-        System.out.println(callback +" is in callbacks Hashmap with Event of type " + type + " for " + this.getName());
+        System.out.println(this.getName() + "is in subscribeEvent and: \n" +
+                callback +" is in callbacks Hashmap with Event of type " + type.getName());
         mb.subscribeEvent(type,this);
     }
     /**
@@ -87,7 +88,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         callbacks.put(type,callback);
-        System.out.println(callback +" is in callbacks Hashmap with Broadcast of type " + type + " for " + this.getName());
+        System.out.println(callback +" is in callbacks Hashmap with Broadcast of type " + type.getName() + " for " + this.getName());
         mb.subscribeBroadcast(type,this);
     }
 
@@ -170,7 +171,7 @@ public abstract class MicroService implements Runnable {
             try {
                 long time = System.currentTimeMillis();
                 m = mb.awaitMessage(this);
-                System.out.println("message " + m + " got fetched by " + this.getName() + " after waiting " + (System.currentTimeMillis() - time));
+                System.out.println("message " + m.getName() + " got fetched by " + this.getName() + " after waiting " + (System.currentTimeMillis() - time));
             } catch (InterruptedException e) {}
            callbacks.get(m.getClass()).call(m); //complete is called from call if necessary
             System.out.println("call finished for " + this.getName());

@@ -8,7 +8,7 @@ public class ExampleBroadcast implements Broadcast {
         this.senderName = senderName;
     }
 
-    public String getSenderName() {
+    public String getName() {
         return senderName;
     }
 }

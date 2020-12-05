@@ -3,7 +3,7 @@ package bgu.spl.mics.application.passiveObjects;
 import com.google.gson.annotations.SerializedName;
 
 public class Event {
-    @SerializedName("custom_naming") private final long totalAttacks;
+    private final long totalAttacks;
     private final long HanSoloFinish;
     private final long C3POFinish;
     private final long R2D2Deactivate;
