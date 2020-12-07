@@ -10,8 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Diary {
 
-    private int totalAttacks;
-    private long startTime;
+    private AtomicInteger totalAttacks;
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -26,19 +25,18 @@ public class Diary {
     }
 
     private Diary(){
-        totalAttacks = 0;
+        totalAttacks = new AtomicInteger();
+        totalAttacks.set(0);
     }
 
     public static Diary getInstance() {
         return SingletonHolder.instance;
     }
 
-
-    public void setStartTime(long _startTime){startTime = _startTime;};
-    public final long getStartTime(){return startTime;}
-
-    public void setTotalAttacks(int _totalAttacks){totalAttacks = _totalAttacks;}
-    public final int getTotalAttacks(){return totalAttacks;}
+    public void setTotalAttacks(int _totalAttacks){
+        int old = totalAttacks.intValue();
+        totalAttacks.compareAndSet(old, _totalAttacks);}
+    public final int getTotalAttacks(){return totalAttacks.intValue();}
 
     public void setHanSoloFinish(long _HanSoloFinish){HanSoloFinish = _HanSoloFinish;}
     public final long getHanSoloFinish(){return HanSoloFinish;}

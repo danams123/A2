@@ -99,10 +99,10 @@ public class MessageBusImpl implements MessageBus {
 	public <T> Future<T> sendEvent(Event<T> e) {
         Future<T> output = null;
         MicroService swap = messages.get(e.getClass()).poll();
-		System.out.println(swap.getName() + " is out of messages for " + e.getClass().getName() + " the queue is: " + messages.get(e.getClass()));
-		System.out.println("MessageBus needs to send the Event " + e.getName() + " to " + swap.getName());
         	synchronized (lock4){
         	if (services.get(swap) != null) {
+				System.out.println(swap.getName() + " is out of messages for " + e.getClass().getName() + " the queue is: " + messages.get(e.getClass()));
+				System.out.println("MessageBus needs to send the Event " + e.getName() + " to " + swap.getName());
         		services.get(swap).add(e);
 				System.out.println(e.getName() + " was added to " + swap.getName() + "in services: " + services.get(swap));
         		messages.get(e.getClass()).add(swap);

@@ -6,7 +6,6 @@ import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
 import bgu.spl.mics.application.passiveObjects.Diary;
 
-import java.util.concurrent.CountDownLatch;
 
 /**
  * LandoMicroservice
@@ -15,15 +14,13 @@ import java.util.concurrent.CountDownLatch;
  */
 public class LandoMicroservice  extends MicroService {
 
-    private long duration;
     private Diary d;
     private CountDownLatch latch;
 
-    public LandoMicroservice(long _duration, CountDownLatch latch) {
+    public LandoMicroservice() {
         super("Lando");
-        duration = _duration;
         d = Diary.getInstance();
-        this.latch = latch;
+        latch = CountDownLatch.getInstance();
     }
 
     @Override
@@ -31,15 +28,17 @@ public class LandoMicroservice  extends MicroService {
         this.subscribeEvent(BombDestroyerEvent.class, c -> {
             System.out.println("BombDestroyerCall was called for " + this.getName());
             try{
+                long duration = d.getLeiaTerminate();
+                d.setLeiaTerminate(d.getLandoTerminate());
             Thread.sleep(duration);}
             catch(InterruptedException i){}
             this.complete(c,c.getResult());
         });
-        latch.countDown();
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             System.out.println("TerminateCall was called for " + this.getName());
-            d.setLandoTerminate(System.currentTimeMillis() - d.getStartTime());
+            d.setLandoTerminate(System.currentTimeMillis() - d.getLandoTerminate());
             this.terminate();
         });
+        latch.countDown();
     }
 }

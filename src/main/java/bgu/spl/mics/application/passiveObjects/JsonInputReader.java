@@ -15,11 +15,3 @@ public class JsonInputReader {
     }
 }
 
-//    Gson gson = new Gson();
-//    Input input = null;
-//        try {
-//                BufferedReader reader = new BufferedReader(new FileReader(filePath));
-//                input = gson.fromJson(reader, Input.class);
-//        } catch (IOException i) {
-//        }
-//        return input;

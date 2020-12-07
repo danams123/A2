@@ -9,6 +9,7 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewok;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 /**
@@ -25,10 +26,10 @@ public class LeiaMicroservice extends MicroService {
     private Ewoks E;
     private Diary d;
 
-    public LeiaMicroservice(Attack[] attacks, Ewoks _E) {
+    public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
-        E = _E;
+        E = Ewoks.getInstance();
         d = Diary.getInstance();
         futures = new ConcurrentLinkedDeque<>();
     }
@@ -37,7 +38,7 @@ public class LeiaMicroservice extends MicroService {
     protected void initialize() {
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             System.out.println("TerminateCall was called for " + this.getName());
-            d.setLeiaTerminate(System.currentTimeMillis() - d.getStartTime());
+            d.setLeiaTerminate(System.currentTimeMillis() - d.getLeiaTerminate());
             this.terminate();
         });
         //sort of attacks

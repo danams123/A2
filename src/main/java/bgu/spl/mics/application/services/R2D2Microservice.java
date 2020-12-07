@@ -3,7 +3,6 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Diary;
 
-import java.util.concurrent.CountDownLatch;
 
 /**
  * R2D2Microservices is in charge of the handling {@link DeactivationEvent}.
@@ -15,15 +14,13 @@ import java.util.concurrent.CountDownLatch;
  */
 public class R2D2Microservice extends MicroService {
 
-    private long duration;
     private Diary d;
     private CountDownLatch latch;
 
-    public R2D2Microservice(long _duration, CountDownLatch latch) {
+    public R2D2Microservice() {
         super("R2D2");
-        duration = _duration;
         d = Diary.getInstance();
-        this.latch = latch;
+        latch = CountDownLatch.getInstance();
     }
 
     @Override
@@ -32,19 +29,19 @@ public class R2D2Microservice extends MicroService {
             System.out.println("DeactivationCall was called for " + this.getName());
             try{
                 long time = System.currentTimeMillis();
-                Thread.sleep(duration);
+                Thread.sleep(d.getR2D2Deactivate());
                 System.out.println(this.getName() + " Deactivated the force shield successfully and slept for " + (System.currentTimeMillis() - time)
-                        + " and the expected sleep duration is: " + duration);
+                        + " and the expected sleep duration is: " + d.getR2D2Deactivate());
             }
             catch(InterruptedException i){}
-            d.setR2D2Deactivate(System.currentTimeMillis() - d.getStartTime());
+            d.setR2D2Deactivate(System.currentTimeMillis() - d.getR2D2Terminate());
             this.complete(c,c.getResult());
         });
-        latch.countDown();
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             System.out.println("TerminateCall was called for " + this.getName());
-            d.setR2D2Terminate(System.currentTimeMillis() - d.getStartTime());
+            d.setR2D2Terminate(System.currentTimeMillis() - d.getR2D2Terminate());
             this.terminate();
         });
+        latch.countDown();
     }
 }

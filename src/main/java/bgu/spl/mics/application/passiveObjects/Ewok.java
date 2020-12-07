@@ -26,6 +26,7 @@ public class Ewok {
         while(!available){
             wait();
         }
+        System.out.println(available);
         available = false;
     }
 
@@ -37,6 +38,7 @@ public class Ewok {
         System.out.println(Thread.currentThread().getName() + " is in release of Ewok for " + serialNumber);
         available = true;
         System.out.println(this + " has been released and notifyall was called!");
+        System.out.println(available);
         notifyAll();
     }
 
