@@ -1,7 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Passive object representing the resource manager.
@@ -15,8 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Ewoks {
     final private ArrayList<Ewok> EwoksList;
     private ArrayList<Integer> waiters;
-//    private AtomicBoolean isWaiting;
-//    private Object lock;
 
     private static class SingletonHolder {
         private static Ewoks instance = new Ewoks();
@@ -25,82 +22,15 @@ public class Ewoks {
     public Ewoks() {
         EwoksList = new ArrayList<Ewok>();
         waiters = new ArrayList<Integer>();
-//        isWaiting = new AtomicBoolean(false);
-//        lock = new Object();
+
     }
 
     public static Ewoks getInstance() {
         return SingletonHolder.instance;
     }
 
-//    public void acquire(int Ewoknum, int sign){
-////        if(sign == 1) {
-////            System.out.println("Han is in acquire of Ewoks for ewok " + Ewoknum);
-////        }
-////        else{
-////            System.out.println("C3PO is in acquire of Ewoks for ewok " + Ewoknum);
-////        }
-////        System.out.println("deadlock: ");
-////        for (int elem: deadlock){
-////            System.out.println(elem + ",");
-////        }
-//        deadlock.set( Ewoknum - 1,(deadlock.get(Ewoknum - 1) + sign));
-//        if(checkDeadlock()) {
-//            wait(sign);
-//        }
-//        else {
-//            try {
-//                EwoksList.get(Ewoknum - 1).acquire();
-//            } catch (InterruptedException i) {
-//            }
-//        }
-//        System.out.println("deadlock: ");
-//        for (int i = 0; i < deadlock.size(); i++) {
-//            System.out.println(deadlock.get(i));
-//            System.out.println(EwoksList.get(i).available);
-//        }
-//    }
-
-//    public void wait(int sign){
-//        if(!isWaiting.get()) {
-//            synchronized (this) {
-//                isWaiting.compareAndSet(false, true);
-//                ArrayList<Ewok> toRetrieve = new ArrayList<>();
-////                System.out.println(Thread.currentThread().getName() + " is in wait of Ewoks");
-//                releaseAll(sign, toRetrieve, 1);
-//                try {
-//                    wait();
-//                } catch (InterruptedException e) {
-//                }
-//                acquireAll(sign, toRetrieve);
-//                isWaiting.compareAndSet(true, false);
-//                notifyAll();
-//            }
-//        }
-//    }
-
-//    public void release(int Ewoknum, int sign){
-//        if(sign == 1) {
-//            System.out.println("Han is in release of Ewoks for ewok " + Ewoknum);
-//        }
-//        else{
-//            System.out.println("C3PO is in release of Ewoks for ewok " + Ewoknum);
-//        }
-//        System.out.println("deadlock: ");
-//        for (int elem: deadlock){
-//            System.out.println(elem + ",");
-//        }
-//
-//        System.out.println("deadlock: ");
-//        for (int i = 0; i < deadlock.size(); i++) {
-//            System.out.println(deadlock.get(i));
-//            System.out.println(EwoksList.get(i).available);
-//        }
-//    }
-
     public boolean checkWaiters(int Ewoknum, int sign){
         waiters.set(Ewoknum - 1, (waiters.get(Ewoknum - 1) + sign));
-//        System.out.println(Thread.currentThread().getName() + " is in checkDeadlock of Ewoks");
         int counter = 0;
         for (Integer elem: waiters){
             if(elem == 3){
@@ -113,53 +43,15 @@ public class Ewoks {
         return false;
     }
 
-//    public void releaseAll(int sign, ArrayList<Ewok> toRetrieve, int sender){
-//        synchronized (lock) {
-////            System.out.println(Thread.currentThread().getName() + " is in releaseAll of Ewoks");
-//            for (int i = 0; i < EwoksList.size(); i++) {
-//                if (deadlock.get(i) == sign || deadlock.get(i) == 3) {
-////                release(i + 1 , sign);
-//                    deadlock.set(i, deadlock.get(i) - sign);
-//                    EwoksList.get(i).release();
-//                    toRetrieve.add(EwoksList.get(i));
-//                }
-//            }
-//            synchronized (this) {
-//                if (sender == 2) {
-//                    notifyAll();
-//                }
-//            }
-//        }
-//    }
 
     public void releaseAll(int sign, int Case){
-//        System.out.println(Thread.currentThread().getName() + " is in releaseAll of Ewoks");
         for (int i = 0; i < EwoksList.size(); i++) {
-//            System.out.println(EwoksList.get(i).getNum() + " before: " + waiters.get(i));
             if ((i + 1 != Case) && (waiters.get(i) == sign || waiters.get(i) == 3)) {
                 waiters.set(i, waiters.get(i) - sign);
-//                System.out.println(EwoksList.get(i).getNum() + " after: " + waiters.get(i));
                 EwoksList.get(i).release();
-//                System.out.println(EwoksList.get(i).getAvailable());
             }
         }
     }
-
-//    public synchronized void notified(){
-//
-//    }
-
-//    public void acquireAll(int sign, ArrayList<Ewok> toRetrieve){
-////        System.out.println(Thread.currentThread().getName() + " is in acquireAll of Ewoks");
-////        for (Ewok elem: toRetrieve){
-////            System.out.println(elem.getNum());
-////        }
-//        for (Ewok elem: toRetrieve){
-//            acquire(elem.getNum(), sign);
-//        }
-//    }
-
-
 
     public final ArrayList<Ewok> getEwoksList(){return EwoksList;}
 

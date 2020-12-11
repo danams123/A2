@@ -26,22 +26,15 @@ public class R2D2Microservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(DeactivationEvent.class, c -> {
-//            System.out.println("DeactivationCall was called for " + this.getName());
             try{
-//                long time = System.currentTimeMillis();
                 Thread.sleep(d.getR2D2Deactivate());
-//                System.out.println(this.getName() + " Deactivated the force shield successfully and slept for " + (System.currentTimeMillis() - time)
-//                        + " and the expected sleep duration is: " + d.getR2D2Deactivate());
             }
             catch(InterruptedException i){}
             d.setR2D2Deactivate(System.currentTimeMillis() - d.getR2D2Terminate());
-//            System.out.println("set time for R2D2deactivate: " + (System.currentTimeMillis()) + "-" + d.getR2D2Terminate());
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
-//            System.out.println("TerminateCall was called for " + this.getName());
             d.setR2D2Terminate(System.currentTimeMillis() - d.getR2D2Terminate());
-//            System.out.println("set time for R2D2terminate: " + (System.currentTimeMillis()) + "-" + d.getR2D2Terminate());
             this.terminate();
         });
         latch.countDown();

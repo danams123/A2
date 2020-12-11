@@ -1,6 +1,5 @@
 package bgu.spl.mics.application.services;
 
-
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.TerminateBroadcast;
@@ -26,20 +25,15 @@ public class LandoMicroservice  extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(BombDestroyerEvent.class, c -> {
-//            System.out.println("BombDestroyerCall was called for " + this.getName());
             try{
                 long duration = d.getLeiaTerminate();
                 d.setLeiaTerminate(d.getLandoTerminate());
-//                long time = System.currentTimeMillis();
             Thread.sleep(duration);
-//            System.out.println("Lando slept for: " + (System.currentTimeMillis() - time) + " instead of: " + duration);
             }
             catch(InterruptedException i){}
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
-//            System.out.println("TerminateCall was called for " + this.getName());
-//            System.out.println("set time for lando terminate: " + (System.currentTimeMillis()) + "-" + d.getLandoTerminate());
             d.setLandoTerminate(System.currentTimeMillis() - d.getLandoTerminate());
             this.terminate();
         });

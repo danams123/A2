@@ -20,10 +20,6 @@ public class Diary {
     private long R2D2Terminate;
     private long LandoTerminate;
 
-    //remove later
-//    public AtomicInteger getNumberOfAttacks() {
-//        return totalAttacks;
-//    }
 
     private static class SingletonHolder {
         private static Diary instance = new Diary();
