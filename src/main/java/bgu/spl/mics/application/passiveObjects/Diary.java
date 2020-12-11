@@ -36,7 +36,9 @@ public class Diary {
 
     public void setTotalAttacks(int _totalAttacks){
         int old = totalAttacks.intValue();
-        totalAttacks.compareAndSet(old, _totalAttacks);}
+        totalAttacks.compareAndSet(old, _totalAttacks);
+    }
+
     public final int getTotalAttacks(){return totalAttacks.intValue();}
 
     public void setHanSoloFinish(long _HanSoloFinish){HanSoloFinish = _HanSoloFinish;}

@@ -68,7 +68,10 @@ public class Future<T> {
 		if (!isDone){
 			unit.timedWait(this,timeout);
 		}
-		if(!isDone) return null;
+		//check again after the wait
+		if(!isDone) {
+			return null;
+		}
 		return result;
 	}
 

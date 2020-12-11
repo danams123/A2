@@ -24,9 +24,7 @@ public class Input {
 	public void setR2D2(int r2d2) {
 		R2D2 = r2d2;
 	}
-	public Attack[] getAttacks() {
-		return attacks;
-	}
+	public Attack[] getAttacks() {return attacks;}
 	public void setAttacks(Attack[] attacks) {
 		this.attacks = attacks;
 	}

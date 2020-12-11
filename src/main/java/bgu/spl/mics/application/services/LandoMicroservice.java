@@ -25,7 +25,10 @@ public class LandoMicroservice  extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(BombDestroyerEvent.class, c -> {
+            //BombDestroyerCallback
             try{
+                //getLeiaTerminate() holds the duration Lando needs to sleep, after getting it, i set it to the
+                //start time for using it in later in Leia
                 long duration = d.getLeiaTerminate();
                 d.setLeiaTerminate(d.getLandoTerminate());
             Thread.sleep(duration);
@@ -34,6 +37,8 @@ public class LandoMicroservice  extends MicroService {
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
+            //TerminateCallback
+            //getLandoTerminate() is set on the start time
             d.setLandoTerminate(System.currentTimeMillis() - d.getLandoTerminate());
             this.terminate();
         });

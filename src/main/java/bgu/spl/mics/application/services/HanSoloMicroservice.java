@@ -35,19 +35,30 @@ public class HanSoloMicroservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(AttackEvent.class, c -> {
+            //AttackCallback
             int check = - 1;
+            //Ewoks aquire loop, won't stop until all ewoks needed are acquired
             for (int i = 0; i < c.getSerials().size(); i++) {
                 int serial = c.getSerials().get(i);
                 Ewok e = c.getEwoks().getEwoksList().get(serial - 1);
                 if (check != i) {
                     if (!c.getEwoks().checkWaiters(e.getNum(), 1)) {
+                        //if checkWaiters() returns false, it's safe to acquire the ewok
                         try {
                             e.acquire();
-                        } catch (InterruptedException ex) {
+                        }
+                        catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
-                    } else {
+                    }
+                    else {
+                        //if checkWaiters() returns true, the microservice releases all the ewoks it holds and calls
+                        //acquire on the ewok that is occupied so it could use it's wait() func until the other
+                        //microservice finishes it's attack, the thread will be notified when the attack ends.
                         c.getEwoks().releaseAll(1, e.getNum());
+                        //after releasing all the ewoks, we reset the 'i' count to 0 so that the microservice will
+                        //restart it's acquire loop, now that it holds the current ewok (after waiting on it for the
+                        //attack to end), we save it on 'check' so it won't try to acquire it again after we reset 'i'.
                         check = i;
                         i = 0;
                         try {
@@ -63,12 +74,15 @@ public class HanSoloMicroservice extends MicroService {
                 d.setTotalAttacks(d.getTotalAttacks() + 1);
             }
             catch(InterruptedException i){}
+            //getHanSoloTerminate() holds the start time
             d.setHanSoloFinish(System.currentTimeMillis() - d.getHanSoloTerminate());
             c.getEwoks().releaseAll(1, -1);
             this.complete(c,c.getResult());
         });
 
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
+            //TerminateCallback
+            //getHanSoloTerminate() holds the start time
             d.setHanSoloTerminate(System.currentTimeMillis() - d.getHanSoloTerminate());
             this.terminate();
         });

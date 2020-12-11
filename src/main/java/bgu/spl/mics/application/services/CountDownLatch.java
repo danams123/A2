@@ -8,6 +8,7 @@ public class CountDownLatch {
     }
     private int counter;
 
+    //count 4 for Han, C3PO, R2D2, Lando
     public CountDownLatch(){
         counter = 4;
     }

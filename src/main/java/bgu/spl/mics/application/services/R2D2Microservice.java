@@ -26,14 +26,18 @@ public class R2D2Microservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeEvent(DeactivationEvent.class, c -> {
+            //DeactivationCallback
             try{
                 Thread.sleep(d.getR2D2Deactivate());
             }
             catch(InterruptedException i){}
+            //getR2D2Terminate() is set for the start time
             d.setR2D2Deactivate(System.currentTimeMillis() - d.getR2D2Terminate());
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
+            //TerminateCallback
+            //getR2D2Terminate() is set for the start time
             d.setR2D2Terminate(System.currentTimeMillis() - d.getR2D2Terminate());
             this.terminate();
         });

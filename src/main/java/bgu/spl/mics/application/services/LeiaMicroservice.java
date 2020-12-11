@@ -21,13 +21,11 @@ import bgu.spl.mics.application.passiveObjects.Ewoks;
 public class LeiaMicroservice extends MicroService {
     private ConcurrentLinkedDeque<Future> futures;
     private Attack[] attacks;
-    private Ewoks E;
     private Diary d;
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
-        E = Ewoks.getInstance();
         d = Diary.getInstance();
         futures = new ConcurrentLinkedDeque<Future>();
     }
@@ -35,15 +33,17 @@ public class LeiaMicroservice extends MicroService {
     @Override
     protected void initialize() {
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
+            //TerminateCallback
+            //getLeiaTerminate() holds the start time
             d.setLeiaTerminate(System.currentTimeMillis() - d.getLeiaTerminate());
             this.terminate();
         });
-        //sort of attacks
+        //sort of attacks for better runtime
         Arrays.sort(attacks, Comparator.comparingInt(o -> (o.getDuration() + (o.getSerials().size() * 1000))));
         for(Attack elem : attacks){
-            futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials(),E)));
+            futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials())));
         }
-
+        //futures queue helps to send all the events and than call get() for all the futures
         for(Future f: futures){
             try {
                 f.get();
