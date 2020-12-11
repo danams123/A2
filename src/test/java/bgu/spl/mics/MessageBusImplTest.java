@@ -103,7 +103,7 @@ class MessageBusImplTest {
         mb.register(m1);
         m1.subscribeEvent(e.getClass() , c);
         Future f = mb.sendEvent(e);
-//        assertNull(f);
+        assertNotNull(f);
         try{
             assertEquals(mb.awaitMessage(m1),e);}
         catch(InterruptedException j){

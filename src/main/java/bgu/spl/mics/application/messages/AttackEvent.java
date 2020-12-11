@@ -9,14 +9,14 @@ public class AttackEvent implements Event<Boolean> {
     final private List<Integer> serials;
     final private Ewoks E;
     final private boolean result;
-    final private String name;
+//    final private String name;
 
     public AttackEvent(long _duration, List<Integer> _serials, Ewoks _E){
         duration = _duration;
         serials = _serials;
         E = Ewoks.getInstance();
         result = true;
-        name = "AttackEvent";
+//        name = "AttackEvent";
     }
 
     public long getDuration(){return duration;}
@@ -27,5 +27,5 @@ public class AttackEvent implements Event<Boolean> {
 
     public boolean getResult(){ return result;}
 
-    public String getName(){return name;}
+//    public String getName(){return name;}
 }

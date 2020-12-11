@@ -21,59 +21,60 @@ import com.google.gson.GsonBuilder;
 public class Main {
 
 	public static void main(String[] args){
-//		System.out.println("Choose number of Tests:");
-//		Scanner sc = new Scanner(System.in);
-//		int counter  = sc.nextInt();
+		System.out.println("Choose number of Tests:");
+		Scanner sc = new Scanner(System.in);
+		int counter  = sc.nextInt();
+		try {
+			GeneratedTests g = new GeneratedTests(counter);
+			for (int i = 1; i <= counter ; i++) {
+				g.GenerateTest(i);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+////
 //		try {
-//			GeneratedTests g = new GeneratedTests(counter);
-//			for (int i = 1; i <= counter ; i++) {
-//				g.GenerateTest(i);
-//			}
+//			GeneratedTests g = new GeneratedTests(1);
+//			g.runTest();
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
 
-		try {
-			GeneratedTests g = new GeneratedTests(1);
-			g.runTest();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-//		System.out.println("Star Wars - Episode VI: Return of the Jedi");
+////		System.out.println("Star Wars - Episode VI: Return of the Jedi");
 //		Input input = null;
 //		try {
 //			input = JsonInputReader.getInputFromJson(args[0]);
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-//		System.out.println("In a galaxy FAR FAR AWAY ...");
+////		System.out.println("In a galaxy FAR FAR AWAY ...");
 //
 //		Ewoks ewoks = Ewoks.getInstance();
 //		for (int i = 1; i <= input.getEwoks(); i++) {
 //			ewoks.add(new Ewok(i));
 //		}
+//
+//		LeiaMicroservice Leia = new LeiaMicroservice(input.getAttacks());
+////		System.out.println("Leia arrived");
+//		HanSoloMicroservice Han = new HanSoloMicroservice();
+////		System.out.println("Han arrived");
+//		C3POMicroservice C3PO = new C3POMicroservice();
+////		System.out.println("C3PO arrived");
+//		R2D2Microservice R2D2 = new R2D2Microservice();
+////		System.out.println("R2D2 arrived");
+//		LandoMicroservice Lando = new LandoMicroservice();
+////		System.out.println("Lando arrived");
+//
+//		System.out.println("start time set");
 //		Diary d = Diary.getInstance();
 //		long startTime = System.currentTimeMillis();
+////		System.out.println("the start time is: " + startTime);
 //		d.setR2D2Deactivate(input.getR2D2());
 //		d.setLeiaTerminate(input.getLando());
 //		d.setHanSoloTerminate(startTime);
 //		d.setC3POTerminate(startTime);
 //		d.setR2D2Terminate(startTime);
 //		d.setLandoTerminate(startTime);
-//		LeiaMicroservice Leia = new LeiaMicroservice(input.getAttacks());
-//		System.out.println("Leia arrived");
-//		HanSoloMicroservice Han = new HanSoloMicroservice();
-//		System.out.println("Han arrived");
-//		C3POMicroservice C3PO = new C3POMicroservice();
-//		System.out.println("C3PO arrived");
-//		R2D2Microservice R2D2 = new R2D2Microservice();
-//		System.out.println("R2D2 arrived");
-//		LandoMicroservice Lando = new LandoMicroservice();
-//		System.out.println("Lando arrived");
-//
-//
-//		System.out.println("start time set");
 //
 //		Thread t1 = new Thread(Leia);
 //		Thread t2 = new Thread(Han);
@@ -103,24 +104,14 @@ public class Main {
 //		catch(InterruptedException i){}
 //		ewoks.clear();
 //		System.out.println("Mission Accomplished! printing Diary");
+//
 //		//output json
 //		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-//
-////		Collection output = new ArrayList();
-////		output.add(new Event(d.getTotalAttacks(), d.getHanSoloFinish(), d.getC3POFinish(), d.getR2D2Deactivate(), d.getLeiaTerminate(),
-////				 d.getHanSoloTerminate(), d.getC3POTerminate(), d.getR2D2Terminate(), d.getLandoTerminate()));
-////		Writer writer = null;
-////		try {
-////			writer = Files.newBufferedWriter(Paths.get("output.json"));
-////			writer.write(gson.toJson(output));
-////			writer.flush();
-////			writer.close();}
-////		catch (IOException e) {}
 //		try {
-//		FileWriter writer = new FileWriter("output.json");
+//		FileWriter writer = new FileWriter(args[1]);
 //		gson.toJson(d, writer);
 //			writer.flush();
-//				writer.close();
+//			writer.close();
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}

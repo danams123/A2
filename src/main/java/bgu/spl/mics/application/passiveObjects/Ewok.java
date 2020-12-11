@@ -21,12 +21,12 @@ public class Ewok {
      */
     //check if works without sync here
     public synchronized void acquire() throws InterruptedException {
-        System.out.println(Thread.currentThread().getName() + " is in acquire of Ewok for " + serialNumber);
-        System.out.println(available);
+//        System.out.println(Thread.currentThread().getName() + " is in acquire of Ewok for " + serialNumber);
+//        System.out.println(available);
         while(!available){
             wait();
         }
-        System.out.println(available);
+//        System.out.println(available);
         available = false;
     }
 
@@ -35,10 +35,10 @@ public class Ewok {
      */
     //check if works without sync here
     public synchronized void release() {
-        System.out.println(Thread.currentThread().getName() + " is in release of Ewok for " + serialNumber);
+//        System.out.println(Thread.currentThread().getName() + " is in release of Ewok for " + serialNumber);
         available = true;
-        System.out.println(this + " has been released and notifyall was called!");
-        System.out.println(available);
+//        System.out.println(this + " has been released and notifyall was called!");
+//        System.out.println(available);
         notifyAll();
     }
 

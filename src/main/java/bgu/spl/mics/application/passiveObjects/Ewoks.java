@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Ewoks {
     final private ArrayList<Ewok> EwoksList;
-    private ArrayList<Integer> deadlock;
+    private ArrayList<Integer> waiters;
 //    private AtomicBoolean isWaiting;
 //    private Object lock;
 
@@ -23,8 +23,8 @@ public class Ewoks {
     }
 
     public Ewoks() {
-        EwoksList = new ArrayList<>();
-        deadlock = new ArrayList<>(10); //TODO: change it later to default constructor!
+        EwoksList = new ArrayList<Ewok>();
+        waiters = new ArrayList<Integer>();
 //        isWaiting = new AtomicBoolean(false);
 //        lock = new Object();
     }
@@ -98,15 +98,15 @@ public class Ewoks {
 //        }
 //    }
 
-    public boolean checkDeadlock(int Ewoknum, int sign){
-        deadlock.set(Ewoknum - 1, (deadlock.get(Ewoknum - 1) + sign));
-        System.out.println(Thread.currentThread().getName() + " is in checkDeadlock of Ewoks");
+    public boolean checkWaiters(int Ewoknum, int sign){
+        waiters.set(Ewoknum - 1, (waiters.get(Ewoknum - 1) + sign));
+//        System.out.println(Thread.currentThread().getName() + " is in checkDeadlock of Ewoks");
         int counter = 0;
-        for (Integer elem: deadlock){
+        for (Integer elem: waiters){
             if(elem == 3){
                 counter ++;
             }
-            if((counter > 1) ||(deadlock.size() == 1 && counter == 1)){
+            if((counter > 1) ||(waiters.size() == 1 && counter == 1)){
                 return true;
             }
         }
@@ -132,13 +132,15 @@ public class Ewoks {
 //        }
 //    }
 
-    public void releaseAll(int sign){
-        System.out.println(Thread.currentThread().getName() + " is in releaseAll of Ewoks");
+    public void releaseAll(int sign, int Case){
+//        System.out.println(Thread.currentThread().getName() + " is in releaseAll of Ewoks");
         for (int i = 0; i < EwoksList.size(); i++) {
-            if (deadlock.get(i) == sign || deadlock.get(i) == 3) {
-                deadlock.set(i, deadlock.get(i) - sign);
+//            System.out.println(EwoksList.get(i).getNum() + " before: " + waiters.get(i));
+            if ((i + 1 != Case) && (waiters.get(i) == sign || waiters.get(i) == 3)) {
+                waiters.set(i, waiters.get(i) - sign);
+//                System.out.println(EwoksList.get(i).getNum() + " after: " + waiters.get(i));
                 EwoksList.get(i).release();
-                System.out.println(EwoksList.get(i).getAvailable());
+//                System.out.println(EwoksList.get(i).getAvailable());
             }
         }
     }
@@ -163,11 +165,11 @@ public class Ewoks {
 
     public void add(Ewok e){
         EwoksList.add(e);
-        deadlock.add(0);
+        waiters.add(0);
     }
 
     public void clear(){
         EwoksList.clear();
-        deadlock.clear();
+        waiters.clear();
     }
 }

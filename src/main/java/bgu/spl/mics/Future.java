@@ -44,7 +44,7 @@ public class Future<T> {
 		this.result = result;
 		isDone = true;
 		notifyAll();
-		System.out.println(this + " has been resolved and notifyall was called!");
+//		System.out.println(this + " has been resolved and notifyall was called!");
 	}
 
 	/**

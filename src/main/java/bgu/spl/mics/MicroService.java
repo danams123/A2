@@ -32,10 +32,11 @@ public abstract class MicroService implements Runnable {
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)
      */
+
     public MicroService(String name) {
         this.name = name;
         mb = MessageBusImpl.getInstance();
-        callbacks = new ConcurrentHashMap<>();
+        callbacks = new ConcurrentHashMap<Class<? extends  Message>,Callback>();
         stop = false;
     }
 
@@ -62,8 +63,8 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
         callbacks.put(type,callback);
-        System.out.println(this.getName() + "is in subscribeEvent and: \n" +
-                callback +" is in callbacks Hashmap with Event of type " + type.getName());
+//        System.out.println(this.getName() + "is in subscribeEvent and: \n" +
+//                callback +" is in callbacks Hashmap with Event of type " + type.getName());
         mb.subscribeEvent(type,this);
     }
     /**
@@ -88,7 +89,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
         callbacks.put(type,callback);
-        System.out.println(callback +" is in callbacks Hashmap with Broadcast of type " + type.getName() + " for " + this.getName());
+//        System.out.println(callback +" is in callbacks Hashmap with Broadcast of type " + type.getName() + " for " + this.getName());
         mb.subscribeBroadcast(type,this);
     }
 
@@ -105,7 +106,7 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-        System.out.println(this.getName() + " called sendEvent");
+//        System.out.println(this.getName() + " called sendEvent");
         return mb.sendEvent(e);
     }
 
@@ -116,7 +117,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-        System.out.println(this.getName() + " called sendBroadcast");
+//        System.out.println(this.getName() + " called sendBroadcast");
         mb.sendBroadcast(b);
     }
 
@@ -130,8 +131,9 @@ public abstract class MicroService implements Runnable {
      * @param result The result to resolve the relevant Future object.
      *               {@code e}.
      */
+
     protected final <T> void complete(Event<T> e, T result) {
-        System.out.println(this.getName() + " called complete");
+//        System.out.println(this.getName() + " called complete");
         mb.complete(e,result);
     }
 
@@ -145,7 +147,7 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
-        System.out.println("terminate was called for " + this.getName());
+//        System.out.println("terminate was called for " + this.getName());
         stop = true;
     }
 
@@ -162,22 +164,22 @@ public abstract class MicroService implements Runnable {
     @Override
     public final void run() {
         mb.register(this);
-        System.out.println(this.getName() + " has registered for the MessageBus!");
+//        System.out.println(this.getName() + " has registered for the MessageBus!");
         initialize();
-        System.out.println("initialization finished for " + this.getName());
+//        System.out.println("initialization finished for " + this.getName());
         while(!stop){
-            System.out.println(this.getName() + " has entered the event loop!");
+//            System.out.println(this.getName() + " has entered the event loop!");
             Message m = null;
             try {
-                long time = System.currentTimeMillis();
+//                long time = System.currentTimeMillis();
                 m = mb.awaitMessage(this);
-                System.out.println("message " + m.getName() + " got fetched by " + this.getName() + " after waiting " + (System.currentTimeMillis() - time));
+                callbacks.get(m.getClass()).call(m); //complete is called from call if necessary
+//                System.out.println("message " + m.getName() + " got fetched by " + this.getName() + " after waiting " + (System.currentTimeMillis() - time));
             } catch (InterruptedException e) {}
-           callbacks.get(m.getClass()).call(m); //complete is called from call if necessary
-            System.out.println("call finished for " + this.getName());
+//            System.out.println("call finished for " + this.getName());
         }
         mb.unregister(this);
-        System.out.println(this.getName() + " has unregistered and finished it's run");
+//        System.out.println(this.getName() + " has unregistered and finished it's run");
     }
 
 }

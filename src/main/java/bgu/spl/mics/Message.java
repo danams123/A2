@@ -9,7 +9,7 @@ package bgu.spl.mics;
  */
 public interface Message {
 
-    //get down later
-
-    public String getName();
+//    //get down later
+//
+//    public String getName();
 }

@@ -4,13 +4,13 @@ import bgu.spl.mics.Event;
 
 public class BombDestroyerEvent implements Event<Boolean> {
     private final boolean result;
-    private final String name;
+//    private final String name;
 
     public BombDestroyerEvent(){
         result = true;
-        name = "BombDestroyerEvent";
+//        name = "BombDestroyerEvent";
     }
     public boolean getResult(){ return result;}
 
-    public String getName(){return name;}
+//    public String getName(){return name;}
 }

@@ -31,20 +31,21 @@ public class LeiaMicroservice extends MicroService {
         this.attacks = attacks;
         E = Ewoks.getInstance();
         d = Diary.getInstance();
-        futures = new ConcurrentLinkedDeque<>();
+        futures = new ConcurrentLinkedDeque<Future>();
     }
 
     @Override
     protected void initialize() {
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
-            System.out.println("TerminateCall was called for " + this.getName());
+//            System.out.println("TerminateCall was called for " + this.getName());
             d.setLeiaTerminate(System.currentTimeMillis() - d.getLeiaTerminate());
+//            System.out.println("set time for Leia terminate: " + (System.currentTimeMillis()) + "-" + d.getLeiaTerminate());
             this.terminate();
         });
         //sort of attacks
-        System.out.println("attacks array before the sort is " + attacks);
-        Arrays.sort(attacks, Comparator.comparingInt(o -> (o.getDuration() + o.getSerials().size())));
-        System.out.println("attacks array after the sort is " + attacks);
+//        System.out.println("attacks array before the sort is " + attacks);
+        Arrays.sort(attacks, Comparator.comparingInt(o -> (o.getDuration() + (o.getSerials().size() * 1000))));
+//        System.out.println("attacks array after the sort is " + attacks);
        //check this sort fucker
         for(Attack elem : attacks){
             futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials(),E)));
