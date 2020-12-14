@@ -37,13 +37,8 @@ public class Main {
 		//Diary Init
 		//holding the start time for later uses in the microservices and passing it through the Singleton Diary
 		Diary d = Diary.getInstance();
-		long startTime = System.currentTimeMillis();
 		d.setR2D2Deactivate(input.getR2D2());
 		d.setLeiaTerminate(input.getLando());
-		d.setHanSoloTerminate(startTime);
-		d.setC3POTerminate(startTime);
-		d.setR2D2Terminate(startTime);
-		d.setLandoTerminate(startTime);
 
 		//Threads init
 		Thread t1 = new Thread(Leia);

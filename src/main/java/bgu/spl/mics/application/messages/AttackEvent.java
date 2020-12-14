@@ -10,7 +10,7 @@ public class AttackEvent implements Event<Boolean> {
     final private Ewoks E;
     final private boolean result;
 
-    public AttackEvent(long _duration, List<Integer> _serials){
+    public AttackEvent(long _duration, List<Integer> _serials, Ewoks ewoks){
         duration = _duration;
         serials = _serials;
         E = Ewoks.getInstance();

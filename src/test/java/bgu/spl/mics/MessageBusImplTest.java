@@ -35,7 +35,7 @@ class MessageBusImplTest {
         List<Integer> l = null;
         long d = 0;
         Ewoks ewoks = null;
-        AttackEvent E = new AttackEvent(d, l);
+        AttackEvent E = new AttackEvent(d, l, ewoks);
         mb.subscribeEvent(E.getClass(), m1);
         mb.sendEvent(E);
         try{

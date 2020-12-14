@@ -68,15 +68,13 @@ public class C3POMicroservice extends MicroService {
                 d.setTotalAttacks(d.getTotalAttacks() + 1);
             }
             catch(InterruptedException i){}
-            //getC3POTerminate() holds the start time
-            d.setC3POFinish(System.currentTimeMillis() - d.getC3POTerminate());
+            d.setC3POFinish(System.currentTimeMillis());
             c.getEwoks().releaseAll(2, -1);
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             //TerminateCallback
-            //getC3POTerminate() holds the start time
-            d.setC3POTerminate(System.currentTimeMillis() - d.getC3POTerminate());
+            d.setC3POTerminate(System.currentTimeMillis());
             this.terminate();
         });
         latch.countDown();

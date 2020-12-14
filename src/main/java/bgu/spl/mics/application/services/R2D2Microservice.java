@@ -28,17 +28,16 @@ public class R2D2Microservice extends MicroService {
         this.subscribeEvent(DeactivationEvent.class, c -> {
             //DeactivationCallback
             try{
+                //getR2D2Deactivate() holds the duration that R2D2 needs to sleep, for now
                 Thread.sleep(d.getR2D2Deactivate());
             }
             catch(InterruptedException i){}
-            //getR2D2Terminate() is set for the start time
-            d.setR2D2Deactivate(System.currentTimeMillis() - d.getR2D2Terminate());
+            d.setR2D2Deactivate(System.currentTimeMillis());
             this.complete(c,c.getResult());
         });
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             //TerminateCallback
-            //getR2D2Terminate() is set for the start time
-            d.setR2D2Terminate(System.currentTimeMillis() - d.getR2D2Terminate());
+            d.setR2D2Terminate(System.currentTimeMillis());
             this.terminate();
         });
         latch.countDown();

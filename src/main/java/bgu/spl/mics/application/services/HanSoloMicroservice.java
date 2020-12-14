@@ -74,16 +74,14 @@ public class HanSoloMicroservice extends MicroService {
                 d.setTotalAttacks(d.getTotalAttacks() + 1);
             }
             catch(InterruptedException i){}
-            //getHanSoloTerminate() holds the start time
-            d.setHanSoloFinish(System.currentTimeMillis() - d.getHanSoloTerminate());
+            d.setHanSoloFinish(System.currentTimeMillis());
             c.getEwoks().releaseAll(1, -1);
             this.complete(c,c.getResult());
         });
 
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             //TerminateCallback
-            //getHanSoloTerminate() holds the start time
-            d.setHanSoloTerminate(System.currentTimeMillis() - d.getHanSoloTerminate());
+            d.setHanSoloTerminate(System.currentTimeMillis());
             this.terminate();
         });
         latch.countDown();

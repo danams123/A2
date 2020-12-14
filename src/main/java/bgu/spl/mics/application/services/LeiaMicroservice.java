@@ -34,14 +34,13 @@ public class LeiaMicroservice extends MicroService {
     protected void initialize() {
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {
             //TerminateCallback
-            //getLeiaTerminate() holds the start time
-            d.setLeiaTerminate(System.currentTimeMillis() - d.getLeiaTerminate());
+            d.setLeiaTerminate(System.currentTimeMillis());
             this.terminate();
         });
         //sort of attacks for better runtime
         Arrays.sort(attacks, Comparator.comparingInt(o -> (o.getDuration() + (o.getSerials().size() * 1000))));
         for(Attack elem : attacks){
-            futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials())));
+            futures.add(this.sendEvent(new AttackEvent(elem.getDuration(),elem.getSerials(), null)));
         }
         //futures queue helps to send all the events and than call get() for all the futures
         for(Future f: futures){
