@@ -4,6 +4,11 @@ import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 import java.util.List;
 
+/**
+ * A class implementing {@link Event}. When a microservice recieves an object of this type, it calls for a callback
+ * representing an Attack by acquiring the appropriate {@link Ewoks}, after that calling sleep() for the input
+ * duration and than complete().
+ */
 public class AttackEvent implements Event<Boolean> {
     final private long duration;
     final private List<Integer> serials;

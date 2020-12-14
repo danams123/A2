@@ -31,7 +31,12 @@ public class HanSoloMicroservice extends MicroService {
         latch = CountDownLatch.getInstance();
     }
 
-
+    /**
+     * Initialize() of HanSoloMicroservices calls subscribeEvent() for AttackEvent and subscribeBroadcast() for
+     * TerminateBroadcast. In this functions , they create the equivalent callbacks using lambda expressions.
+     * Callback of AttackEvent adds the required Ewoks for attack and sleeps for the input time, than calls complete().
+     * Callback of TerminationBroadcast calls Terminate().
+     */
     @Override
     protected void initialize() {
         this.subscribeEvent(AttackEvent.class, c -> {

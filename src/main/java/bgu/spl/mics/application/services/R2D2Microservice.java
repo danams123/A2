@@ -23,6 +23,13 @@ public class R2D2Microservice extends MicroService {
         latch = CountDownLatch.getInstance();
     }
 
+
+    /**
+     * Initialize() of R2D2Microservices calls subscribeEvent() for DeactivationEvent and subscribeBroadcast() for
+     * TerminateBroadcast. In this functions , they create the equivalent callbacks using lambda expressions.
+     * Callback of DeactivationEvent sleeps for the input time and calls complete().
+     * Callback of TerminationBroadcast calls Terminate().
+     */
     @Override
     protected void initialize() {
         this.subscribeEvent(DeactivationEvent.class, c -> {

@@ -30,6 +30,14 @@ public class LeiaMicroservice extends MicroService {
         futures = new ConcurrentLinkedDeque<Future>();
     }
 
+    /**
+     * Initialize() of LeiaMicroservices calls sendEvent() for all the attack events, deactivation event,
+     * BombDestroyer event and Terminate broadcast. on top of that is calls subscribeBroadcast() for
+     * TerminateBroadcast. In this function, they create the equivalent callbacks using lambda expressions.
+     * In each sendEvent(), it saves the equivalent future and uses the get() function which makes it wait until
+     * all the futures are resolved.
+     * Callback of TerminationBroadcast calls Terminate().
+     */
     @Override
     protected void initialize() {
         this.subscribeBroadcast(TerminateBroadcast.class, c -> {

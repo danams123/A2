@@ -29,6 +29,16 @@ public class Ewoks {
         return SingletonHolder.instance;
     }
 
+    /**
+     * The function check the private field Waiters, and signals the {@link bgu.spl.mics.MicroService} using it
+     * if it should call acquire() of {@link Ewok} or releaseAll() of Ewoks.
+     * <p>
+     * @param Ewoknum       The number of Ewok in the field Ewokslist, represents the Ewok the microservice want to
+     *                      acquire.
+     * @param sign         signals the Microservice entering, 1 for {@link bgu.spl.mics.application.services.HanSoloMicroservice}
+     *                     and 2 for {@link bgu.spl.mics.application.services.C3POMicroservice}.
+     * @return  		{@link boolean} if there is a possible deadlock or not.
+     */
     public boolean checkWaiters(int Ewoknum, int sign){
         //before the function checks waiters, we update the sign so it would look as if the thread did acquire
         //and so see if two threads called acquire simultaneously
@@ -49,7 +59,16 @@ public class Ewoks {
         return false;
     }
 
-
+    /**
+     * The function calls release() of {@link Ewok} for each Ewok aquired by the current Microservice that used it,
+     * it also updates the field Waiters.
+     * <p>
+     * @param sign   signals the Microservice entering, 1 for {@link bgu.spl.mics.application.services.HanSoloMicroservice}
+     *               and 2 for {@link bgu.spl.mics.application.services.C3POMicroservice}.
+     * @param Case    signaling if the func was called because of a finished attack or due to a
+     *                possible deadlock. If it's the second option, than it will represent the troublesome ewok in a
+     *                deadlock.
+     */
     public void releaseAll(int sign, int Case){
         //release all the ewoks the microservice use, the sign signals which microservice tries to call the func, 1 for
         //Han, 2 for C3PO. Case is for signaling if the func was called because of a finished attack or due to a
@@ -64,13 +83,22 @@ public class Ewoks {
         }
     }
 
+
     public final ArrayList<Ewok> getEwoksList(){return EwoksList;}
 
+    /**
+     * The function adds an {@link Ewok} to the field Ewokslist and updates the field Waiters.
+     * <p>
+     * @param e   The {@link Ewok} to add to Ewokslist.
+     */
     public void add(Ewok e){
         EwoksList.add(e);
         waiters.add(0);
     }
 
+    /**
+     * clears the fields of Ewoks: Ewokslist and Waiters.
+     */
     public void clear(){
         EwoksList.clear();
         waiters.clear();

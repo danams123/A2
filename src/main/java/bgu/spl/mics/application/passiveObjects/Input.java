@@ -1,5 +1,8 @@
 package bgu.spl.mics.application.passiveObjects;
 
+/**
+ * Holds the objects that {@link JsonInputReader} parses from the Json Input file.
+ */
 public class Input {
 	private Attack[] attacks;
 	int R2D2;
